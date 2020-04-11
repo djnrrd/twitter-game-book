@@ -21,7 +21,7 @@ class twgbStitch(object):
         self.content = stitch['content'][0]
         self.divert = ''
         self.options = []
-        self.flagName = ''
+        self.flagNames = []
         self.pageNum = 0
         self.pageLabel = ''
         options_list = [x for x in stitch['content'] if isinstance(x, dict)]
@@ -34,7 +34,7 @@ class twgbStitch(object):
                 self.options.append(option)
             if 'flagName' in option:
                 logger.debug(f"Adding flag {option['flagName']}")
-                self.flagName = option['flagName']
+                self.flagNames.append(option['flagName'])
             if 'pageNum' in option:
                 logger.debug(f"Adding pageNum {option['pageNum']}")
                 self.pageNum = option['pageNum']
@@ -64,6 +64,7 @@ class twGameBook(object):
                 source_data = self.load_local_json(source)
             if 'title' and 'data' in source_data:
                 self.title = source_data['title']
+                self.author = source_data['data']['editorData']['authorName']
                 self.initial = source_data['data']['initial']
                 self.stitches = self.load_stitches(source_data['data'][
                                                       'stitches'])
@@ -120,8 +121,38 @@ class twGameBook(object):
         return ret_list
 
     def get_stitch(self, key):
+        """Return an individual stitch by it's key
+        :param key: The key for the stitch to return
+        :type key: str
+        :return: The individual stitch
+        :rtype: twgbStitch
+        """
         stitch = [x for x in self.stitches if x.key == key]
         return stitch.pop()
+
+    def read_options(self, options):
+        """Generate the thread endings when options are present on the stitch
+
+        :param options: The list of options from the stitch
+        :type options: list
+        :return: List of thread ending tweets
+        :rtype: list
+        """
+        ret_list = []
+        end_string = 'Should we:\n\n'
+        for option in options:
+            # Make sure we haven't exceeded an individual tweet
+            if len(end_string) + len(option['option']) > 280:
+                ret_list.append(end_string)
+                end_string = ''
+            end_string += f"* {option['option']}\n"
+        # One more check for the foot text
+        if len(end_string) +  49 > 280:
+            ret_list.append(end_string)
+            end_string = ''
+        end_string += '\nReply to this tweet with your preferred Hashtag'
+        ret_list.append(end_string)
+        return ret_list
 
     def read_section(self, start_key='', ret_list=[]):
         """Read a section of the game until options or an ending is found
@@ -139,13 +170,20 @@ class twGameBook(object):
             start_key = self.initial
         logger.debug(f"using Stitch ID {start_key}")
         stitch = self.get_stitch(start_key)
+        # split the output to fit in 280 characters for twitter
         ret_list += wrap(stitch.content, 280)
-
+        # Update game flags
+        self.flags += stitch.flagNames
         # Now look if we need to keep going to the next piece
         if stitch.divert:
             return self.read_section(stitch.divert, ret_list)
+        # Or generate our options, there shouldn't be both
         elif stitch.options:
-            return ret_list
+            logger.info(f"{stitch.key} - {json.dumps(self.flags)}")
+            ret_list += self.read_options(stitch.options)
+        # Otherwise we've reached an ending
         else:
-            return ret_list
+            ret_list.append(f"Thank you for playing {self.title} by {self.author}")
+        return ret_list
+
 
