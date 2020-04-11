@@ -90,5 +90,6 @@ Every content list starts with the story text. All other dictionaries are
 {"flagName": "str"}             # Flags to keep track of for ifConditions
 ```
 
-If there are no divert or option objects, then you have reached an ending. I
- think that's all the important ones for now.
+If there are no divert or option objects, then you have reached an ending
+ notIfConditions and ifConditions appear to be a logical AND with no
+ duplication allowed. I think that's all the important ones for now.

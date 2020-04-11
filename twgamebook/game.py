@@ -138,21 +138,53 @@ class twGameBook(object):
         :return: List of thread ending tweets
         :rtype: list
         """
-        ret_list = []
-        end_string = 'Should we:\n\n'
+        # First thing is to filter the options down if there are conditions
+        # attached to them
+        filtered_options = []
         for option in options:
-            # Make sure we haven't exceeded an individual tweet
-            if len(end_string) + len(option['option']) > 280:
+            # assume true unless the conditions tell us otherwise
+            if_result = True
+            not_if_result = True
+            # Check of ifConditions
+            if option['ifConditions']:
+                # Get a list of all the flags for the ifcondition
+                if_conds = [x['ifCondition'] for x in option['ifConditions']]
+                # Check that all the ifConds exist in the game flags
+                if_result = all(item in if_conds for item in self.flags)
+            # Check for noIfConditions
+            if option['notIfConditions']:
+                # Get a list of the flag strings in the condition
+                not_if_conds = [x['notIfCondition'] for x in option[
+                    'notIfConditions']]
+                # Check if all the notIfConds are not in game flags
+                not_if_result = all(item not in not_if_conds for item in \
+                        self.flags)
+            if if_result and not_if_result:
+                filtered_options.append(option)
+        # Filtering done are we left with only one option? If we're left with
+        # none we've broken the game and it's likely broken on inklewriter as
+        # well
+        if len(filtered_options) == 1:
+            pass
+            next_key = filtered_options[0]['linkPath']
+            return self.get_stitch(next_key)
+        else:
+            # Let's go!
+            ret_list = []
+            end_string = 'Should we:\n\n'
+            for option in filtered_options:
+                # Make sure we haven't exceeded an individual tweet
+                if len(end_string) + len(option['option']) > 280:
+                    ret_list.append(end_string)
+                    end_string = ''
+                end_string += f"* {option['option']}\n"
+            # One more check for the foot text
+            if len(end_string) +  49 > 280:
                 ret_list.append(end_string)
                 end_string = ''
-            end_string += f"* {option['option']}\n"
-        # One more check for the foot text
-        if len(end_string) +  49 > 280:
+            end_string += '\nReply to this tweet with your preferred Hashtag'
             ret_list.append(end_string)
-            end_string = ''
-        end_string += '\nReply to this tweet with your preferred Hashtag'
-        ret_list.append(end_string)
-        return ret_list
+            return ret_list
 
     def read_section(self, start_key='', ret_list=[]):
         """Read a section of the game until options or an ending is found
@@ -166,6 +198,11 @@ class twGameBook(object):
         :return: A list of tweets made up of all the stitches for this section.
         :rtype: list
         """
+        # ret_list isn't being cleared when the method finishes, leading to
+        # subsequent calls being a cumulative version of the results must be a
+        # pythonic quirk I need to learn more about.
+        if not ret_list:
+            ret_list = []
         if not start_key:
             start_key = self.initial
         logger.debug(f"using Stitch ID {start_key}")
@@ -180,10 +217,15 @@ class twGameBook(object):
         # Or generate our options, there shouldn't be both
         elif stitch.options:
             logger.info(f"{stitch.key} - {json.dumps(self.flags)}")
-            ret_list += self.read_options(stitch.options)
+            option_tweets = self.read_options(stitch.options)
+            if isinstance(option_tweets, twgbStitch):
+                return self.read_section(option_tweets.key, ret_list)
+            else:
+                ret_list += option_tweets
+                return ret_list
         # Otherwise we've reached an ending
         else:
             ret_list.append(f"Thank you for playing {self.title} by {self.author}")
-        return ret_list
+            return ret_list
 
 
