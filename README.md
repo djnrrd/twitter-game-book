@@ -26,7 +26,7 @@ A Python program for running crowd sourced adventures as a bot on Twitter.com
  * Print required sections
     * ~~Create cumulative text from diverts~~
     * ~~Add options to the end of the print~~
-    * Check conditions on stitches
+    * ~~Check conditions on stitches~~
     * ~~Gracefully end the session~~
     * ~~Log last position~~ 
  * Sleep app for required time

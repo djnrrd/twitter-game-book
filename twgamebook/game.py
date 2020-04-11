@@ -40,7 +40,7 @@ class twgbStitch(object):
                 self.flag_names.append(option['flagName'])
             if 'pageNum' in option:
                 logger.debug(f"Adding page_num {option['pageNum']}")
-                self.page_num = option['pagNum']
+                self.page_num = option['pageNum']
             if 'pageLabel' in option:
                 logger.debug(f"Adding page_label {option['pageLabel']}")
                 self.page_label = option['pageLabel']
@@ -50,7 +50,7 @@ class twgbStitch(object):
             if 'notIfCondition' in option:
                 logger.debug(f"Adding not_if_condition"
                              f" {option['notIfCondition']}")
-                self.not_if_conditions.append(option['notifCondition'])
+                self.not_if_conditions.append(option['notIfCondition'])
 
 
     def __repr__(self):
@@ -156,24 +156,16 @@ class twGameBook(object):
         # attached to them
         filtered_options = []
         for option in options:
-            # assume true unless the conditions tell us otherwise
-            if_result = True
-            not_if_result = True
-            # Check of ifConditions
             if option['ifConditions']:
-                # Get a list of all the flags for the ifcondition
-                if_conds = [x['ifCondition'] for x in option['ifConditions']]
-                # Check that all the ifConds exist in the game flags
-                if_result = all(item in if_conds for item in self.flags)
-            # Check for noIfConditions
+                if_conditions = [x['ifCondition'] for x in option['ifConditions']]
+            else:
+                if_conditions = []
             if option['notIfConditions']:
-                # Get a list of the flag strings in the condition
-                not_if_conds = [x['notIfCondition'] for x in option[
-                    'notIfConditions']]
-                # Check if all the notIfConds are not in game flags
-                not_if_result = all(item not in not_if_conds for item in \
-                        self.flags)
-            if if_result and not_if_result:
+                not_if_conditions = [x['notIfCondition'] for x in option[
+                'notIfConditions']]
+            else:
+                not_if_conditions = []
+            if self.__pass_conditions(if_conditions, not_if_conditions):
                 filtered_options.append(option)
         # Filtering done are we left with only one option? If we're left with
         # none we've broken the game and it's likely broken on inklewriter as
@@ -200,48 +192,75 @@ class twGameBook(object):
             ret_list.append(end_string)
             return ret_list
 
-    def read_section(self, start_key='', ret_list=[]):
+    def __pass_conditions(self, if_conditions=[], not_if_conditions=[]):
+        """ Check the conditions related to displaying the option or stitch
+
+        :param if_conditions: List of the ifConditions flags to check for
+        :type if_conditions: list
+        :param not_if_conditions: List of the notIfConditions flags to check for
+        :type not_if_conditions: list
+        :return: True or False
+        :rtype: bool
+        """
+        # Assume things are true
+        if_result = True
+        not_if_result = True
+        if if_conditions:
+            if_result = all(item in self.flags for item in if_conditions)
+        if not_if_conditions:
+            not_if_result = any(item not in self.flags for item in
+                                not_if_conditions)
+        return if_result and not_if_result
+
+    def read_section(self, start_key='', _ret_list=[]):
         """Read a section of the game until options or an ending is found
 
         :param start_key: The key for the starting stitch of the story. Leaving
             this blank will start the story from the beginning
         :type start_key: str
-        :param ret_list: The cumulative previously returned thread, used in
+        :param _ret_list: The cumulative previously returned thread, used in
             recursion
-        :type ret_list: list
+        :type _ret_list: list
         :return: A list of tweets made up of all the stitches for this section.
         :rtype: list
         """
-        # ret_list isn't being cleared when the method finishes, leading to
+        # _ret_list isn't being cleared when the method finishes, leading to
         # subsequent calls being a cumulative version of the results. Must be a
         # pythonic quirk I need to learn more about.
-        if not ret_list:
-            ret_list = []
-        if not start_key:
+        if not _ret_list or not isinstance(_ret_list, list):
+            _ret_list = []
+        if not start_key or not isinstance(start_key, str):
             start_key = self.initial
         logger.debug(f"using Stitch ID {start_key}")
         stitch = self.__get_stitch(start_key)
-        # split the output to fit in 280 characters for twitter
-        ret_list += wrap(stitch.content, 280)
-        # Update game flags
-        self.flags += stitch.flag_names
-        # Now look if we need to keep going to the next piece
-        if stitch.divert:
-            return self.read_section(stitch.divert, ret_list)
-        # Or generate our options, there shouldn't be both
-        elif stitch.options:
-            logger.info(f"{stitch.key} - {json.dumps(self.flags)}")
-            option_tweets = self.__read_options(stitch.options)
-            if isinstance(option_tweets, twgbStitch):
-                return self.read_section(option_tweets.key, ret_list)
+        if stitch:
+            # Update game flags
+            self.flags += stitch.flag_names
+            # Check if we display this stitch:
+            if self.__pass_conditions(stitch.if_conditions,
+                                      stitch.not_if_conditions):
+                # split the output to fit in 280 characters for twitter
+                _ret_list += wrap(stitch.content, 280)
+            # Now look if we need to keep going to the next piece
+            if stitch.divert:
+                return self.read_section(stitch.divert, _ret_list)
+            # Or generate our options, there shouldn't be both
+            elif stitch.options:
+                logger.info(f"{stitch.key} - {json.dumps(self.flags)}")
+                option_tweets = self.__read_options(stitch.options)
+                if isinstance(option_tweets, twgbStitch):
+                    return self.read_section(option_tweets.key, _ret_list)
+                else:
+                    _ret_list += option_tweets
+                    return _ret_list
+            # Otherwise we've reached an ending
             else:
-                ret_list += option_tweets
-                return ret_list
-        # Otherwise we've reached an ending
+                logger.info(f"GAMEEND - {self.title}")
+                _ret_list.append(f"Thank you for playing {self.title} by {self.author}")
+                return _ret_list
         else:
-            logger.info(f"{GAMEEND - self.title}")
-            ret_list.append(f"Thank you for playing {self.title} by {self.author}")
-            return ret_list
+            logger.warning(f"Could not find {start_key} in the game")
+            raise KeyError(f"Could not find {start_key} in the game")
 
     def get_hashtags(self, key):
         """Get the hashtags associated with the options
