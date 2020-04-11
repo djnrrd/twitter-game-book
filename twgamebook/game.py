@@ -1,6 +1,7 @@
 import logging
 import json
 from textwrap import wrap
+import re
 # Get the log into this namespace
 logger = logging.getLogger('twgamebook')
 
@@ -11,9 +12,9 @@ class twgbStitch(object):
     def __init__(self, key, stitch):
         """Generate a twgbSwitch object from the source JSON
 
-        :param key: The switch key from the source JSON
+        :param key: The stitch key from the source JSON
         :type key: str
-        :param stitch: The switch data
+        :param stitch: The stitch data
         :type stitch: dict
         """
         logger.debug(f"Building switch obect {key}")
@@ -21,9 +22,11 @@ class twgbStitch(object):
         self.content = stitch['content'][0]
         self.divert = ''
         self.options = []
-        self.flagNames = []
-        self.pageNum = 0
-        self.pageLabel = ''
+        self.flag_names = []
+        self.if_conditions = []
+        self.not_if_conditions = []
+        self.page_num = 0
+        self.page_label = ''
         options_list = [x for x in stitch['content'] if isinstance(x, dict)]
         for option in options_list:
             if 'divert' in option:
@@ -34,13 +37,21 @@ class twgbStitch(object):
                 self.options.append(option)
             if 'flagName' in option:
                 logger.debug(f"Adding flag {option['flagName']}")
-                self.flagNames.append(option['flagName'])
+                self.flag_names.append(option['flagName'])
             if 'pageNum' in option:
-                logger.debug(f"Adding pageNum {option['pageNum']}")
-                self.pageNum = option['pageNum']
+                logger.debug(f"Adding page_num {option['pageNum']}")
+                self.page_num = option['pagNum']
             if 'pageLabel' in option:
-                logger.debug(f"Adding pageLabel {option['pageLabel']}")
-                self.pageLabel = option['pageLabel']
+                logger.debug(f"Adding page_label {option['pageLabel']}")
+                self.page_label = option['pageLabel']
+            if 'ifCondition' in option:
+                logger.debug(f"Adding if_condition {option['ifCondition']}")
+                self.if_conditions.append(option['ifCondition'])
+            if 'notIfCondition' in option:
+                logger.debug(f"Adding not_if_condition"
+                             f" {option['notIfCondition']}")
+                self.not_if_conditions.append(option['notifCondition'])
+
 
     def __repr__(self):
         return self.key
@@ -59,14 +70,14 @@ class twGameBook(object):
         :type source_file: str"""
         if isinstance(source, str):
             if source[0:7] == 'http://':
-                source_data = self.load_http_json(source)
+                source_data = self.__load_http_json(source)
             else:
-                source_data = self.load_local_json(source)
+                source_data = self.__load_local_json(source)
             if 'title' and 'data' in source_data:
                 self.title = source_data['title']
                 self.author = source_data['data']['editorData']['authorName']
                 self.initial = source_data['data']['initial']
-                self.stitches = self.load_stitches(source_data['data'][
+                self.stitches = self.__load_stitches(source_data['data'][
                                                       'stitches'])
                 self.flags = []
             else:
@@ -75,7 +86,7 @@ class twGameBook(object):
         else:
             raise KeyError('Expected string object as source')
 
-    def load_http_json(self, source_url):
+    def __load_http_json(self, source_url):
         """Get the source file from the internet
 
         :param source_url:
@@ -86,7 +97,7 @@ class twGameBook(object):
         logger.warning('Currently does not support HTTP')
         return False
 
-    def load_local_json(self, source_file):
+    def __load_local_json(self, source_file):
         """Get the source file from local disk
 
         :param source_file: Path to the locally stored source file
@@ -107,7 +118,7 @@ class twGameBook(object):
             raise json.JSONDecodeError()
         return source_json
 
-    def load_stitches(self, stitches):
+    def __load_stitches(self, stitches):
         """Generate a list of twgbStitch objects
 
         :param stitches: Dictionary of stitches from the JSON source file
@@ -120,7 +131,7 @@ class twGameBook(object):
             ret_list.append(twgbStitch(key, stitches[key]))
         return ret_list
 
-    def get_stitch(self, key):
+    def __get_stitch(self, key):
         """Return an individual stitch by it's key
         :param key: The key for the stitch to return
         :type key: str
@@ -128,9 +139,12 @@ class twGameBook(object):
         :rtype: twgbStitch
         """
         stitch = [x for x in self.stitches if x.key == key]
-        return stitch.pop()
+        if stitch:
+            return stitch.pop()
+        else:
+            return None
 
-    def read_options(self, options):
+    def __read_options(self, options):
         """Generate the thread endings when options are present on the stitch
 
         :param options: The list of options from the stitch
@@ -167,7 +181,7 @@ class twGameBook(object):
         if len(filtered_options) == 1:
             pass
             next_key = filtered_options[0]['linkPath']
-            return self.get_stitch(next_key)
+            return self.__get_stitch(next_key)
         else:
             # Let's go!
             ret_list = []
@@ -199,25 +213,25 @@ class twGameBook(object):
         :rtype: list
         """
         # ret_list isn't being cleared when the method finishes, leading to
-        # subsequent calls being a cumulative version of the results must be a
+        # subsequent calls being a cumulative version of the results. Must be a
         # pythonic quirk I need to learn more about.
         if not ret_list:
             ret_list = []
         if not start_key:
             start_key = self.initial
         logger.debug(f"using Stitch ID {start_key}")
-        stitch = self.get_stitch(start_key)
+        stitch = self.__get_stitch(start_key)
         # split the output to fit in 280 characters for twitter
         ret_list += wrap(stitch.content, 280)
         # Update game flags
-        self.flags += stitch.flagNames
+        self.flags += stitch.flag_names
         # Now look if we need to keep going to the next piece
         if stitch.divert:
             return self.read_section(stitch.divert, ret_list)
         # Or generate our options, there shouldn't be both
         elif stitch.options:
             logger.info(f"{stitch.key} - {json.dumps(self.flags)}")
-            option_tweets = self.read_options(stitch.options)
+            option_tweets = self.__read_options(stitch.options)
             if isinstance(option_tweets, twgbStitch):
                 return self.read_section(option_tweets.key, ret_list)
             else:
@@ -225,7 +239,36 @@ class twGameBook(object):
                 return ret_list
         # Otherwise we've reached an ending
         else:
+            logger.info(f"{GAMEEND - self.title}")
             ret_list.append(f"Thank you for playing {self.title} by {self.author}")
             return ret_list
 
+    def get_hashtags(self, key):
+        """Get the hashtags associated with the options
 
+        :param key: The key of the stitch containing the options
+        :type key: str
+        :return: A List of hashtags and associated stitch keys
+        :rtype: list
+        """
+        if isinstance(key, str):
+            logger.debug(f"Looking for hashtags in {key}")
+            stitch = self.__get_stitch(key)
+            if stitch:
+                ret_list = []
+                pattern = re.compile('#[0-9a-zA-Z]+')
+                for option in stitch.options:
+                    hash_tags = pattern.findall(option['option'])
+                    stitch_key = option['linkPath']
+                    if len(hash_tags) == 1:
+                        ret_list.append((hash_tags[0], stitch_key))
+                    else:
+                        logger.warning(f"Expected to find 1 hashtag in "
+                                       f"{option['option']}")
+                        raise ValueError('Expected to find 1 hashtag')
+                return ret_list
+            else:
+                logger.warning(f"Could not find {key} in the game")
+                raise KeyError(f"Could not find {key} in the game")
+        else:
+            raise KeyError('string expected as key')

@@ -27,12 +27,14 @@ A Python program for running crowd sourced adventures as a bot on Twitter.com
     * ~~Create cumulative text from diverts~~
     * ~~Add options to the end of the print~~
     * Check conditions on stitches
-    * Gracefully end the session
+    * ~~Gracefully end the session~~
     * ~~Log last position~~ 
  * Sleep app for required time
  * Wake from sleep
  * Load last position from log
  * Check last position for required hashtags
+    * ~~Game object done~~
+    * Wrapper code needed
  * Compare hashtags from twitter and choose new starting position
  * Use log to determine position at startup and set timer
  * Glue that all together :)
@@ -77,7 +79,7 @@ Every content list starts with the story text. All other dictionaries are
 
 ```JSON
 {"pageNum": int}                # Section page number
-{"pageLabel": "str"}            # Section label
+{"page_label": "str"}            # Section label
 {"divert": "str"}               # Key to the next Stitch, direct link
 {"option": "str",               # Text for the option
   "linkPath": "str",            # Key to the next Stitch
@@ -89,6 +91,8 @@ Every content list starts with the story text. All other dictionaries are
   ] or None
 }
 {"flagName": "str"}             # Flags to keep track of for ifConditions
+{"ifCondition": "str"}          # List of conditions for showing the stitch
+{"notIfCondition": "str"}       # List of negative conditions
 ```
 
 If there are no divert or option objects, then you have reached an ending
