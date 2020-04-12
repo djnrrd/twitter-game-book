@@ -23,7 +23,7 @@ A Python program for running crowd sourced adventures as a bot on Twitter.com
     * ~~By File~~
     * ~~By HTTP~~
  * ~~Parse adventure file~~
- * Print required sections
+ * ~~Print required sections~~
     * ~~Create cumulative text from diverts~~
     * ~~Add options to the end of the print~~
     * ~~Check conditions on stitches~~
@@ -31,7 +31,8 @@ A Python program for running crowd sourced adventures as a bot on Twitter.com
     * ~~Log last position~~ 
  * Sleep app for required time
  * Wake from sleep
- * Load last position from log
+ * ~~Load last position from log~~
+ * Update game flags from log
  * Check last position for required hashtags
     * ~~Game object done~~
     * Wrapper code needed
