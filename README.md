@@ -21,7 +21,7 @@ A Python program for running crowd sourced adventures as a bot on Twitter.com
    * ~~Inklewriter.com does JSON so testing with this.~~
  * Load adventure
     * ~~By File~~
-    * By HTTP
+    * ~~By HTTP~~
  * ~~Parse adventure file~~
  * Print required sections
     * ~~Create cumulative text from diverts~~

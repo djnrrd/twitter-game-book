@@ -2,6 +2,7 @@ import logging
 import json
 from textwrap import wrap
 import re
+import requests
 # Get the log into this namespace
 logger = logging.getLogger('twgamebook')
 
@@ -69,7 +70,7 @@ class twGameBook(object):
         :param source_file: The file path or URL to the source text
         :type source_file: str"""
         if isinstance(source, str):
-            if source[0:7] == 'http://':
+            if source[0:8] == 'https://':
                 source_data = self.__load_http_json(source)
             else:
                 source_data = self.__load_local_json(source)
@@ -94,8 +95,15 @@ class twGameBook(object):
         :return: Parsed JSON object
         """
         logger.debug(f"{source_url} provided as URL")
-        logger.warning('Currently does not support HTTP')
-        return False
+        # Get the file via requests. If it raises as error, so be it
+        r = requests.get(source_url)
+        # We should get a 200, otherwise we'll raise an error through the
+        # Response
+        if r.status_code == 200:
+            source_json = r.json()
+            return source_json
+        else:
+            r.raise_for_status()
 
     def __load_local_json(self, source_file):
         """Get the source file from local disk
