@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 """
 Usage:
-    twgamebook.py -s SOURCE [-n] [-d]
+    twgamebook.py -s SOURCE -t PERIOD [-n] [-d]
 
 Options:
     -s SOURCE --source=SOURCE       Source file for the game, can be a local
                                     file or HTTP
+    -t PERIOD --sleep-time=PERIOD   Period to sleep between threads in the game
+                                    for example 24h, 3d, 1h
+
     -n --no-twitter                 Use interactive console session for testing
     -d                              Switch debugging on in the log
 """
@@ -35,11 +38,12 @@ def main(args):
         logger.debug('Starting twgamebook')
         # Load the game
         source_file = args['--source']
+        sleep_time = args['--sleep-time']
         my_story = game.TWGBStory(source_file)
         if args['--no-twitter']:
-            my_game = game.TWGBConsoleGame(my_story)
+            my_game = game.TWGBConsoleGame(my_story, sleep_time)
         else:
-            my_game = game.TWGBGame(my_story)
+            my_game = game.TWGBGame(my_story, sleep_time)
         my_game.play()
     else:
         raise KeyError('Expected Dictionary object as args')

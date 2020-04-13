@@ -35,7 +35,7 @@ A Python program for running crowd sourced adventures as a bot on Twitter.com
  * ~~Update game flags from log~~
  * Check last position for required hashtags
     * ~~Game object done~~
-    * Wrapper code needed
+    * ~~Wrapper code needed~~
  * Compare hashtags from twitter and choose new starting position
  * Use log to determine position at startup and set timer
  * Glue that all together :)
