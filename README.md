@@ -32,7 +32,7 @@ A Python program for running crowd sourced adventures as a bot on Twitter.com
  * Sleep app for required time
  * Wake from sleep
  * ~~Load last position from log~~
- * Update game flags from log
+ * ~~Update game flags from log~~
  * Check last position for required hashtags
     * ~~Game object done~~
     * Wrapper code needed
