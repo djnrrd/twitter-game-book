@@ -19,7 +19,7 @@ A Python program for running crowd sourced adventures as a bot on Twitter.com
  * Parse hashtags in replies
  * ~~Determine adventure file formatting~~
    * ~~Inklewriter.com does JSON so testing with this.~~
- * Load adventure
+ * ~~Load adventure~~
     * ~~By File~~
     * ~~By HTTP~~
  * ~~Parse adventure file~~
@@ -29,16 +29,16 @@ A Python program for running crowd sourced adventures as a bot on Twitter.com
     * ~~Check conditions on stitches~~
     * ~~Gracefully end the session~~
     * ~~Log last position~~ 
- * Sleep app for required time
- * Wake from sleep
+ * ~~Sleep app for required time~~
+ * ~~Wake from sleep~~
  * ~~Load last position from log~~
  * ~~Update game flags from log~~
- * Check last position for required hashtags
+ * ~~Check last position for required hashtags~~
     * ~~Game object done~~
     * ~~Wrapper code needed~~
- * Compare hashtags from twitter and choose new starting position
- * Use log to determine position at startup and set timer
- * Glue that all together :)
+ * ~~Compare hashtags from twitter and choose new starting position~~
+ * ~~Use log to determine position at startup and set timer~~
+ * Glue that all together ????
  
  ## About Inklewriter JSON files
  
