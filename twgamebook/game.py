@@ -5,6 +5,7 @@ import re
 import requests
 from datetime import datetime, timedelta
 from random import randint
+from collections import Counter
 
 # Get the log into this namespace
 logger = logging.getLogger('twgamebook')
@@ -283,18 +284,18 @@ class TWGBStory(object):
             logger.debug(f"Looking for hashtags in {key}")
             stitch = self._get_stitch(key)
             if stitch:
-                ret_list = []
+                ret_dict = {}
                 pattern = re.compile('#[0-9a-zA-Z]+')
                 for option in stitch.options:
                     hash_tags = pattern.findall(option['option'])
                     stitch_key = option['linkPath']
                     if len(hash_tags) == 1:
-                        ret_list.append((hash_tags[0], stitch_key))
+                        ret_dict[hash_tags[0].upper()] = stitch_key
                     else:
                         logger.warning(f"Expected to find 1 hashtag in "
                                        f"{option['option']}")
                         raise ValueError('Expected to find 1 hashtag')
-                return ret_list
+                return ret_dict
             else:
                 logger.warning(f"Could not find {key} in the game")
                 raise KeyError(f"Could not find {key} in the game")
@@ -338,7 +339,7 @@ class TWGBGame(object):
 
 
     def play(self):
-        """Simulate game in terminal
+        """Play the game
         """
         # We loop in here until the game ends
         game_end = False
@@ -366,10 +367,23 @@ class TWGBGame(object):
                     # sleep
                     user_hashtags = self._gather_hashtags(tweet_id, last_time)
                     logger.debug(f"Got user hashtags {user_hashtags}")
-
+                    bookmark = self._check_votes(user_hashtags, valid_hashtags)
             thread = self.story.get_section(bookmark)
             post = self._send_story(thread)
             logger.info(post)
+
+    def _check_votes(self, user_hastags, valid_hashtags):
+        """Check that user submitted hashtags are valid and return the key to
+        the winning one
+
+        :param user_hastags: The user submitted hashtags
+        :type user_hastags: Counter
+        :param valid_hashtags: The valid hashtags for this part of the story
+        :type valid_hashtags: dict
+        :return: The key for the next stitch in the story.
+        :rtype: str
+        """
+        pass
 
     def _load_last_log(self):
         """Load the last game state from the log.
@@ -385,7 +399,7 @@ class TWGBGame(object):
         info_logs = [x for x in logs if 'INFO' in x]
         # If there's no log we start fresh because there should be at least 2
         # messages per twitter thread.
-        if len(info_logs) > 2:
+        if len(info_logs) >= 2:
             # Trim the newline character and split out the fields
             # INFO messages should be in pairs of game info, tweet info
             last_game_log = info_logs[-2][:-1]
@@ -456,8 +470,8 @@ class TWGBConsoleGame(TWGBGame):
         :param last_time: Datetime object of the time the last tweet
             was sent
         :type last_time: datetime
-        :return: A list of hashtags submitted by users
-        :rtype: list
+        :return: The counts of hashtags submitted by users
+        :rtype: Counter
         """
         # So instead of sleeping, we're going to collect input from the terminal
         # Work out how long we're 'sleeping' for and collect 'tweets' in a
@@ -477,4 +491,25 @@ class TWGBConsoleGame(TWGBGame):
         all_hashtags = []
         for hashtag in user_hashtags:
             all_hashtags.append(hashtag)
-        return all_hashtags
+        # Convert them to a Counter objects
+        return Counter(all_hashtags)
+
+    def _check_votes(self, user_hastags, valid_hashtags):
+        """Check that user submitted hashtags are valid and return the key to
+        the winning one
+
+        :param user_hastags: The user submitted hashtags
+        :type user_hastags: Counter
+        :param valid_hashtags: The valid hashtags for this part of the story
+        :type valid_hashtags: dict
+        :return: The key for the next stitch in the story.
+        :rtype: str
+        """
+        ret_str = ''
+        print('====')
+        for hashtag in user_hastags.most_common():
+            if hashtag[0] in valid_hashtags and not ret_str:
+                ret_str = valid_hashtags[hashtag[0]]
+            if hashtag[0] in valid_hashtags:
+                print(f"* {hashtag[0]} - {hashtag[1]} votes")
+        return ret_str
