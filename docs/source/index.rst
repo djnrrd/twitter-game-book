@@ -1,8 +1,9 @@
+#################
 Twitter Game Book
-=================
+#################
 .. include:: ../../README.rst
-    :start-after: #Twitter Game Book
-    :end-before: ##
+    :start-after: Twitter Game Book
+    :end-before: Installation
 
 .. toctree::
     :maxdepth: 2
