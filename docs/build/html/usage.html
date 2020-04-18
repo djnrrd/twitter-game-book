@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Usage &#8212; Twitter Game Book 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="twgamebook package" href="twgamebook.html" />
+    <link rel="prev" title="Twitter Game Book" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+</div>
+<hr class="docutils" />
+<div class="section" id="let-s-go">
+<h2>Let’s Go<a class="headerlink" href="#let-s-go" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Usage</span><span class="p">:</span>
+    <span class="n">runtwgb</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">s</span> <span class="n">SOURCE</span> <span class="o">-</span><span class="n">t</span> <span class="n">PERIOD</span> <span class="p">[</span><span class="o">-</span><span class="n">n</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">d</span><span class="p">]</span>
+
+<span class="n">Options</span><span class="p">:</span>
+    <span class="o">-</span><span class="n">s</span> <span class="n">SOURCE</span> <span class="o">--</span><span class="n">source</span><span class="o">=</span><span class="n">SOURCE</span>       <span class="n">Source</span> <span class="n">file</span> <span class="k">for</span> <span class="n">the</span> <span class="n">game</span><span class="p">,</span> <span class="n">can</span> <span class="n">be</span> <span class="n">a</span> <span class="n">local</span>
+                                    <span class="n">file</span> <span class="ow">or</span> <span class="n">HTTP</span>
+    <span class="o">-</span><span class="n">t</span> <span class="n">PERIOD</span> <span class="o">--</span><span class="n">sleep</span><span class="o">-</span><span class="n">time</span><span class="o">=</span><span class="n">PERIOD</span>   <span class="n">Period</span> <span class="n">to</span> <span class="n">sleep</span> <span class="n">between</span> <span class="n">threads</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">game</span>
+                                    <span class="k">for</span> <span class="n">example</span> <span class="mi">24</span><span class="n">h</span><span class="p">,</span> <span class="mi">3</span><span class="n">d</span><span class="p">,</span> <span class="mi">1</span><span class="n">h</span>
+
+    <span class="o">-</span><span class="n">n</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">twitter</span>                 <span class="n">Use</span> <span class="n">interactive</span> <span class="n">console</span> <span class="n">session</span> <span class="k">for</span> <span class="n">testing</span>
+    <span class="o">-</span><span class="n">d</span>                              <span class="n">Switch</span> <span class="n">debugging</span> <span class="n">on</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">log</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p>A JSON file from <a class="reference external" href="https://inklewriter.com">Inklewriter</a> is required.
+When you share a story from Inklewriter, adding ‘.json’ to the end of the URL
+will give you the JSON file.  This URL may be passed as SOURCE to the command
+line, or it can be downloaded locally and the path to the  local file provided
+as SOURCE.</p>
+<p>After posting a story thread, the bot will wait for PERIOD while users
+respond with their preferred hashtags. PERIOD can be days, hours or minutes.</p>
+<p>For testing dry runs, the –no-twitter option can be used to print the story
+and capture “tweets” from the console.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Twitter Game Book</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#let-s-go">Let’s Go</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="twgamebook.html">twgamebook package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Twitter Game Book</a></li>
+      <li>Next: <a href="twgamebook.html" title="next chapter">twgamebook package</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, DJ Nrrd.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/usage.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

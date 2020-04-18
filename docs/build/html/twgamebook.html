@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>twgamebook package &#8212; Twitter Game Book 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Usage" href="usage.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="twgamebook-package">
+<h1>twgamebook package<a class="headerlink" href="#twgamebook-package" title="Permalink to this headline">¶</a></h1>
+<p>This package contains the modules and objects required to play a game book
+adventure on Twitter, based on a source file from <a class="reference external" href="http://inklewriter.com">Inklewriter.com</a>.</p>
+<div class="section" id="twgbstory-class">
+<h2>TWGBStory Class<a class="headerlink" href="#twgbstory-class" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="twgamebook.story.TWGBStory">
+<em class="property">class </em><code class="sig-prename descclassname">twgamebook.story.</code><code class="sig-name descname">TWGBStory</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source</span></em><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.story.TWGBStory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An object for loading JSON files from inklewriter.com and managing the
+story and it’s stitches</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>source_file</strong> (<em>str</em>) – The file path or URL to the source text</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>KeyError</strong> – if a string is not provided to the constructor</p></li>
+<li><p><strong>ValueError</strong> – if the source file is not an inklewriter.com JSON
+object or if the local file could not be found</p></li>
+<li><p><strong>ConnectionError</strong> – if there are any network issues connecting to
+inklewriter.com</p></li>
+<li><p><strong>Timeout</strong> – if there is a network timeout connecting to inklewriter.com</p></li>
+<li><p><strong>TooManyRedirects</strong> – if there are too many redirects trying to
+retrieve the JSON file from inklewriter.com</p></li>
+<li><p><strong>HTTPError</strong> – if any HTTP code other than 200 is received from
+inklewriter.com</p></li>
+<li><p><strong>json.JSONDecodeError</strong> – if there was an issue decoding the JSON file</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> (<em>str</em>) – The title of this story</p></li>
+<li><p><strong>author</strong> (<em>str</em>) – The story’s author</p></li>
+<li><p><strong>initial</strong> (<em>str</em>) – The initial stitch key to start the story from</p></li>
+<li><p><strong>stitches</strong> (<em>list</em>) – The list of stitches that make up the story</p></li>
+<li><p><strong>flags</strong> (<em>list</em>) – The list of flags encountered during the story’s
+progress</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="twgamebook.story.TWGBStory.get_hashtags">
+<code class="sig-name descname">get_hashtags</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.story.TWGBStory.get_hashtags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the hashtags associated with the options</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – The key of the stitch containing the options</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A List of hashtags and associated stitch keys</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="twgamebook.story.TWGBStory.get_section">
+<code class="sig-name descname">get_section</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_key</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">_ret_str</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.story.TWGBStory.get_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a section of the game until options or an ending is found</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_key</strong> (<em>str</em>) – The key for the starting stitch of the story. Leaving
+this blank will start the story from the beginning</p></li>
+<li><p><strong>_ret_str</strong> (<em>str</em>) – The cumulative previously returned thread, used in
+recursion</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of tweets made up of all the stitches for this section.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="twgamebook.story.TWGBStory.set_flags">
+<code class="sig-name descname">set_flags</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.story.TWGBStory.set_flags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the flags for the story externally</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>flags</strong> (<em>list</em>) – A list of flags to set in the story</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True when set.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="twgbstitch-class">
+<h2>TWGBStitch Class<a class="headerlink" href="#twgbstitch-class" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="twgamebook.story.TWGBStitch">
+<em class="property">class </em><code class="sig-prename descclassname">twgamebook.story.</code><code class="sig-name descname">TWGBStitch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">stitch</span></em><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.story.TWGBStitch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An object for managing the individual story stitches.</p>
+<p>A stitch is a paragraph of text from inklewriter.com and the relevant
+options for branched story telling.  Each stitch will have a unique key
+as a reference and the text of the paragraph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – The stitch key from the inklewriter source JSON</p></li>
+<li><p><strong>stitch</strong> (<em>dict</em>) – The stitch data from the inklewriter source JSON</p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – Unique key for this stitch</p></li>
+<li><p><strong>content</strong> (<em>str</em>) – Text for this stitch</p></li>
+<li><p><strong>divert</strong> (<em>str</em>) – Key for the next stitch in the story. Only provided if
+there are no options and the story has not ended.</p></li>
+<li><p><strong>options</strong> (<em>list</em>) – A list of possible options to follow after this stitch</p></li>
+<li><p><strong>flag_names</strong> (<em>list</em>) – A list of flags that should be appended to the
+story when this stitch is loaded</p></li>
+<li><p><strong>if_conditions</strong> (<em>list</em>) – A list of flags that must <em>all</em> be logged in the
+story for this stitch to be visible</p></li>
+<li><p><strong>not_if_conditions</strong> (<em>list</em>) – A list of flags that must not be logged in
+the story for the stitch to be visible.</p></li>
+<li><p><strong>page_num</strong> (<em>int</em>) – The page number from inklewriter</p></li>
+<li><p><strong>page_label</strong> (<em>str</em>) – The title for this page or section of the story on
+inklewriter</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="twgbgame-class">
+<h2>TWGBGame Class<a class="headerlink" href="#twgbgame-class" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="twgamebook.game.TWGBGame">
+<em class="property">class </em><code class="sig-prename descclassname">twgamebook.game.</code><code class="sig-name descname">TWGBGame</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">story</span></em>, <em class="sig-param"><span class="n">sleep_time</span></em><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.game.TWGBGame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="twgamebook.game.TWGBGame.play">
+<code class="sig-name descname">play</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.game.TWGBGame.play" title="Permalink to this definition">¶</a></dt>
+<dd><p>Play the game</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="twgbconsolestory-class">
+<h2>TWGBConsoleStory Class<a class="headerlink" href="#twgbconsolestory-class" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="twgamebook.game.TWGBConsoleGame">
+<em class="property">class </em><code class="sig-prename descclassname">twgamebook.game.</code><code class="sig-name descname">TWGBConsoleGame</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">story</span></em>, <em class="sig-param"><span class="n">sleep_time</span></em><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.game.TWGBConsoleGame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#twgamebook.game.TWGBGame" title="twgamebook.game.TWGBGame"><code class="xref py py-class docutils literal notranslate"><span class="pre">twgamebook.game.TWGBGame</span></code></a></p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Twitter Game Book</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">twgamebook package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#twgbstory-class">TWGBStory Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#twgbstitch-class">TWGBStitch Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#twgbgame-class">TWGBGame Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#twgbconsolestory-class">TWGBConsoleStory Class</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="usage.html" title="previous chapter">Usage</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, DJ Nrrd.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/twgamebook.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

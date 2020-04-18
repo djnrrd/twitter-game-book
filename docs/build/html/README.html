@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>About Inklewriter JSON files &#8212; Twitter Game Book 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <p>#Twitter Game Book</p>
+<p>A Python program for running crowd sourced adventures as a bot on <a class="reference external" href="https://twitter.com">Twitter</a> in a style similar to popular 1980s Game Books. Stories are written on <a class="reference external" href="https://inklewriter.com">Inklewriter</a></p>
+<p>Each story part will be tweeted as a thread. The final tweet in the thread will contain hashtags for the crowd sourced decisions.  Twitter users then reply to that tweet with their preferred hashtag.  After a period of a week, or shorter if things get popular, the hashtags in the reply will be parsed and counted.</p>
+<p>##Installation</p>
+<p>##To Do</p>
+<ul class="simple">
+<li><p>Log into Twitter</p></li>
+<li><p>Send a tweet</p></li>
+<li><p>Send a thread</p></li>
+<li><p>Read replies to tweet</p></li>
+<li><p>Parse hashtags in replies</p></li>
+<li><p>~~Determine adventure file formatting~~</p>
+<ul>
+<li><p>~~Inklewriter.com does JSON so testing with this.~~</p></li>
+</ul>
+</li>
+<li><p>~~Load adventure~~</p>
+<ul>
+<li><p>~~By File~~</p></li>
+<li><p>~~By HTTP~~</p></li>
+</ul>
+</li>
+<li><p>~~Parse adventure file~~</p></li>
+<li><p>~~Print required sections~~</p>
+<ul>
+<li><p>~~Create cumulative text from diverts~~</p></li>
+<li><p>~~Add options to the end of the print~~</p></li>
+<li><p>~~Check conditions on stitches~~</p></li>
+<li><p>~~Gracefully end the session~~</p></li>
+<li><p>~~Log last position~~</p></li>
+</ul>
+</li>
+<li><p>~~Sleep app for required time~~</p></li>
+<li><p>~~Wake from sleep~~</p></li>
+<li><p>~~Load last position from log~~</p></li>
+<li><p>~~Update game flags from log~~</p></li>
+<li><p>~~Check last position for required hashtags~~</p>
+<ul>
+<li><p>~~Game object done~~</p></li>
+<li><p>~~Wrapper code needed~~</p></li>
+</ul>
+</li>
+<li><p>~~Compare hashtags from twitter and choose new starting position~~</p></li>
+<li><p>~~Use log to determine position at startup and set timer~~</p></li>
+<li><p>Glue that all together ????</p></li>
+</ul>
+<div class="section" id="about-inklewriter-json-files">
+<h1>About Inklewriter JSON files<a class="headerlink" href="#about-inklewriter-json-files" title="Permalink to this headline">¶</a></h1>
+<p>JSON files from inklewood have the following structure:</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="nt">&quot;title&quot;</span><span class="p">:</span>  <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span>  <span class="p">{</span>
+    <span class="nt">&quot;stitches&quot;</span><span class="p">:</span> <span class="p">{},</span>   
+    <span class="nt">&quot;initial&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span> 
+    <span class="nt">&quot;optionMirroring&quot;</span><span class="p">:</span>  <span class="kc">true</span><span class="p">,</span> 
+    <span class="nt">&quot;allowCheckpoints&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nt">&quot;editorData&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;playPoint&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>  
+      <span class="nt">&quot;libraryVisible&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="nt">&quot;authorName&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;textSize&quot;</span><span class="p">:</span> <span class="mi">0</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Stitches is a dictionary object that has been indexed by keys generated from
+the first few words of each stitch.  Each stitch is a further dictionary
+, containing one list with the key “content”.</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="nt">&quot;stitchKeyFro&quot;</span><span class="p">:</span>  <span class="p">{</span>
+    <span class="nt">&quot;content&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;str&quot;</span><span class="p">,</span>          
+      <span class="p">{}</span>               
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Every content list starts with the story text. All other dictionaries are
+optional.</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+  <span class="p">{</span><span class="nt">&quot;pageNum&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>                
+  <span class="p">{</span><span class="nt">&quot;page_label&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">},</span>            
+  <span class="p">{</span><span class="nt">&quot;divert&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">},</span>          
+  <span class="p">{</span><span class="nt">&quot;option&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>               
+    <span class="nt">&quot;linkPath&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>            
+    <span class="nt">&quot;ifConditions&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span><span class="nt">&quot;ifCondition&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">}</span>        
+    <span class="p">],</span>   
+    <span class="nt">&quot;notIfConditions&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span><span class="nt">&quot;notIfCondition&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">}</span>   
+    <span class="p">]</span> 
+  <span class="p">},</span>
+  <span class="p">{</span><span class="nt">&quot;flagName&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">},</span>             
+  <span class="p">{</span><span class="nt">&quot;ifCondition&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">},</span>          
+  <span class="p">{</span><span class="nt">&quot;notIfCondition&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">}</span>
+<span class="p">]</span>       
+</pre></div>
+</div>
+<p>If there are no divert or option objects, then you have reached an ending
+notIfConditions and ifConditions appear to be a logical AND with no
+duplication allowed. I think that’s all the important ones for now.</p>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Twitter Game Book</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twgamebook.html">twgamebook package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, DJ Nrrd.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
