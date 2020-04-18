@@ -14,7 +14,7 @@ Options:
 """
 import logging
 from docopt import docopt
-from twgamebook import game
+from twgamebook import game, story
 
 # Set my logging options
 logger = logging.getLogger('twgamebook')
@@ -39,7 +39,7 @@ def main(args):
         # Load the game
         source_file = args['--source']
         sleep_time = args['--sleep-time']
-        my_story = game.TWGBStory(source_file)
+        my_story = story.TWGBStory(source_file)
         if args['--no-twitter']:
             my_game = game.TWGBConsoleGame(my_story, sleep_time)
         else:

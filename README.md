@@ -8,9 +8,7 @@ A Python program for running crowd sourced adventures as a bot on Twitter.com
    reply to that tweet with their preferred hashtag.  After a period of a
     week, or shorter if things get popular, the hashtags in the reply will be
      parsed and counted
- 
- 
- 
+  
  ##To Do
  * Log into Twitter
  * Send a tweet
