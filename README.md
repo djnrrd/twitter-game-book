@@ -1,14 +1,12 @@
 #Twitter Game Book
 
-A Python program for running crowd sourced adventures as a bot on Twitter.com
- in a style similar to popular 1980s Game Books.
+A Python program for running crowd sourced adventures as a bot on [Twitter](https://twitter.com) in a style similar to popular 1980s Game Books. Stories are written on [Inklewriter](https://inklewriter.com)
  
- Each story part will be tweeted as a thread. The final tweet in the thread
-  will contain hashtags for the crowd sourced decisions.  Twitter users then
-   reply to that tweet with their preferred hashtag.  After a period of a
-    week, or shorter if things get popular, the hashtags in the reply will be
-     parsed and counted
+Each story part will be tweeted as a thread. The final tweet in the thread will contain hashtags for the crowd sourced decisions.  Twitter users then reply to that tweet with their preferred hashtag.  After a period of a week, or shorter if things get popular, the hashtags in the reply will be parsed and counted.
+ 
+ ##Installation
   
+   
  ##To Do
  * Log into Twitter
  * Send a tweet
@@ -45,15 +43,15 @@ JSON files from inklewood have the following structure:
 ```JSON
 { "title":  "str",
   "data":  {
-    "stitches": {},   # Documented below
-    "initial": "str", # The key of the starting stitch
-    "optionMirroring":  bool, 
-    "allowCheckpoints": bool,
+    "stitches": {},   
+    "initial": "str", 
+    "optionMirroring":  true, 
+    "allowCheckpoints": true,
     "editorData": {
-      "playPoint": "str", # 
-      "libraryVisible": bool,
+      "playPoint": "str",  
+      "libraryVisible": true,
       "authorName": "str",
-      "textSize": int
+      "textSize": 0
     }
   }
 }
@@ -66,8 +64,8 @@ Stitches is a dictionary object that has been indexed by keys generated from
 ```JSON
 { "stitchKeyFro":  {
     "content": [
-      "str",          # The actual story text
-      {}              # Optional Dictionary objects documented below 
+      "str",          
+      {}               
     ]
   }
 }
@@ -77,21 +75,23 @@ Every content list starts with the story text. All other dictionaries are
  optional.
 
 ```JSON
-{"pageNum": int}                # Section page number
-{"page_label": "str"}            # Section label
-{"divert": "str"}               # Key to the next Stitch, direct link
-{"option": "str",               # Text for the option
-  "linkPath": "str",            # Key to the next Stitch
-  "ifConditions": [
-    {"ifCondition": "str"}      # List of conditions for showing the option  
-  ] or None,   
-  "notIfConditions": [
-    {"notIfCondition": "str"}   # List of negative conditions
-  ] or None
-}
-{"flagName": "str"}             # Flags to keep track of for ifConditions
-{"ifCondition": "str"}          # List of conditions for showing the stitch
-{"notIfCondition": "str"}       # List of negative conditions
+[
+  {"pageNum": 0},                
+  {"page_label": "str"},            
+  {"divert": "str"},          
+  {"option": "str",               
+    "linkPath": "str",            
+    "ifConditions": [
+      {"ifCondition": "str"}        
+    ],   
+    "notIfConditions": [
+      {"notIfCondition": "str"}   
+    ] 
+  },
+  {"flagName": "str"},             
+  {"ifCondition": "str"},          
+  {"notIfCondition": "str"}
+]       
 ```
 
 If there are no divert or option objects, then you have reached an ending

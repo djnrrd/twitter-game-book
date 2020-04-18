@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Usage:
-    twgamebook.py -s SOURCE -t PERIOD [-n] [-d]
+    runtwgb.py -s SOURCE -t PERIOD [-n] [-d]
 
 Options:
     -s SOURCE --source=SOURCE       Source file for the game, can be a local
