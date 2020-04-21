@@ -11,15 +11,15 @@ logger = logging.getLogger('twgamebook')
 
 
 class TWGBGame(object):
+    """An object for managing the game on Twitter
 
+    :param story: TWGBStory object to play
+    :type story: twgamebook.story.TWGBStory
+    :param sleep_time: Time to sleep between threads
+    :type sleep_time: str
+    """
     def __init__(self, story, sleep_time):
-        """An object for managing the game
 
-        :param story: TWGBStory object to play
-        :type story: twgamebook.story.TWGBStory
-        :param sleep_time: Time to sleep between threads
-        :type sleep_time: str
-        """
         self.story = story
         if sleep_time[-1] == 'd':
             self.sleep_time = timedelta(days=int(sleep_time[:-1]))
@@ -136,7 +136,13 @@ class TWGBGame(object):
         pass
 
 class TWGBConsoleGame(TWGBGame):
+    """An object for managing the game on the console
 
+    :param story: TWGBStory object to play
+    :type story: twgamebook.story.TWGBStory
+    :param sleep_time: Time to sleep between threads
+    :type sleep_time: str
+    """
     def _send_story(self, thread):
         """Send the next story thread to the console
 
