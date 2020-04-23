@@ -1,20 +1,19 @@
-#!/usr/bin/env python
 """
 Usage:
-    runtwgb.py -s SOURCE -t PERIOD [-n] [-d]
+    runtwgb -s SOURCE -t PERIOD [-n] [-d]
 
 Options:
-    -s SOURCE --source=SOURCE       Source file for the game, can be a local
-                                    file or HTTP
-    -t PERIOD --sleep-time=PERIOD   Period to sleep between threads in the game
-                                    for example 24h, 3d, 1h
+-s SOURCE --source=SOURCE       Source file for the game, can be a local
+                                file or HTTP
+-t PERIOD --sleep-time=PERIOD   Period to sleep between threads in the game
+                                for example 24h, 3d, 1h
 
-    -n --no-twitter                 Use interactive console session for testing
-    -d                              Switch debugging on in the log
+-n --no-twitter                 Use interactive console session for testing
+-d                              Switch debugging on in the log
 """
 import logging
 from docopt import docopt
-from twgamebook import game, story
+from . import game, story
 
 # Set my logging options
 logger = logging.getLogger('twgamebook')
@@ -27,10 +26,6 @@ log_fh.setFormatter(log_format)
 logger.addHandler(log_fh)
 
 def main(args):
-    """Run the Twitter Game Book bot
-
-    :param args: docopt created arguments from sysv
-    :type args:dict"""
     if isinstance(args, dict):
         if args['-d']:
             logger.setLevel(logging.DEBUG)
