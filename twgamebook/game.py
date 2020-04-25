@@ -64,6 +64,10 @@ class TWGBGame(object):
                     logger.debug(f"Got user hashtags {user_hashtags}")
                     votes_text, bookmark = self._check_votes(user_hashtags,
                                                    valid_hashtags)
+                    # If we've got a tie, return to the last paragraph from
+                    # the logs
+                    if bookmark == 'TIED':
+                        bookmark = last_pos[1]
             if votes_text:
                 tweet_id = self._send_stitch(votes_text, tweet_id)
             thread = self.story.get_section(bookmark)
@@ -85,13 +89,18 @@ class TWGBGame(object):
             story.
         :rtype: str, str
         """
-        ret_str = ''
         vote_str = ''
         user_hashtags = Counter(user_hashtags)
+        win_tally = []
+        ret_str = ''
         for hashtag in user_hashtags.most_common():
-            if hashtag[0] in valid_hashtags and not ret_str:
-                ret_str = valid_hashtags[hashtag[0]]
             if hashtag[0] in valid_hashtags:
+                if not win_tally:
+                    win_tally = hashtag
+                    ret_str = valid_hashtags[hashtag[0]]
+                elif hashtag[1] >= win_tally[1]:
+                    # Uh oh, we appear to have a tie.
+                    ret_str = 'TIED'
                 vote_str += f"* {hashtag[0]} - {hashtag[1]} votes\n"
         return vote_str, ret_str
 
