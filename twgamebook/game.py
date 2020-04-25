@@ -19,7 +19,7 @@ class TWGBGame(object):
     :type sleep_time: str
     """
     def __init__(self, story, sleep_time):
-
+        """Initialise the game"""
         self.story = story
         if sleep_time[-1] == 'd':
             self.sleep_time = timedelta(days=int(sleep_time[:-1]))
@@ -30,9 +30,9 @@ class TWGBGame(object):
         else:
             raise ValueError("Sleep time expects 'd' 'h' or 'm'")
 
-
     def play(self):
-        """Play the game
+        """Play the game until a story end has been reached. Sleeping
+        inbetween branching decisions.
         """
         # We loop in here until the game ends
         game_end = False
@@ -71,8 +71,8 @@ class TWGBGame(object):
             logger.info(post)
 
     def _check_votes(self, user_hashtags, valid_hashtags):
-        """Check that user submitted hashtags are valid and return the key to
-        the winning one
+        """Check that user submitted hashtags are valid and return a summary
+        of votes and the key to the winning one
 
         User hashtags should be a list of unique hashtags per user, converted
         to uppercase
