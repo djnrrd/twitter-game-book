@@ -11,6 +11,33 @@ Each story part will be tweeted as a thread. The final tweet in the thread will 
 Installation
 ============
 
+Obtaining latest source code
+----------------------------
+::
+
+    git clone https://github.com/djnrrd/twitter-game-book.git
+    cd twitter-game-book
+
+Alternatively, download the latest tar.gz source file from `the GitHub
+repository <https://github.com/djnrrd/twitter-game-book/tree/master/dist>`_
+::
+
+    wget https://github.com/djnrrd/twitter-game-book/tree/master/dist/twitter
+    -game-book-X-X-X.tar.gz
+    tar -zxvf twitter-game-book-X-X-X.tar.gz
+    cd twitter-game-book
+
+Installing from source
+----------------------
+::
+
+    # With pip (recommended)
+    pip install .
+    # Without pip, best used in a venv
+    python3 setup.py install
+
+
+
 Usage
 =====
 

@@ -11,7 +11,7 @@ Installation
 
 Let's Go
 ========
-.. literalinclude:: ../../runtwgb.py
+.. literalinclude:: ../../twgamebook/command_line.py
     :start-after: """
     :end-before: """
 
