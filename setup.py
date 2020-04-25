@@ -14,6 +14,7 @@ setup(
         'Bug Tracker': 'https://github.com/djnrrd/twitter-game-book/issues',
         'Source Code': 'https://github.com/djnrrd/twitter-game-book/',
     },
+    data_files = [('test_inputs', ['test_inputs/3198.json'])],
     keywords='twitter bot twitterbot games',
     classifiers=[
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
