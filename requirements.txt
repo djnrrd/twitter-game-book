@@ -1,9 +1,4 @@
-logging
 docopt
-json
-textwrap
-re
-datetime
-random
-collections
 requests
+setuptools
+sphinx
