@@ -294,8 +294,8 @@ class TWGBStory(object):
             else:
                 # Write that we ended to the log
                 logger.info(f"GAMEEND {self.title}")
-                _ret_list += f"\n\nThank you for playing {self.title} by" \
-                            f" {self.author}"
+                _ret_list += [f"Thank you for playing {self.title} by" \
+                            f" {self.author}"]
                 return _ret_list
         else:
             logger.warning(f"Could not find {start_key} in the game")
