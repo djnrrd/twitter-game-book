@@ -61,6 +61,14 @@ To Do
 * Read replies to tweet
 * Parse hashtags in replies
 
+Change Log
+==========
+
+* 0.0.2 - Added functionality to force administrator choice of a hashtag, in
+  case any trolls attempt to hijack the thread into loops
+* 0.0.1 - First properly packaged version with working setup.py but still no
+  twitter access
+
 About Inklewriter JSON files
 ============================
  

@@ -12,6 +12,13 @@ Twitter Game Book
     usage
     twgamebook
 
+Change Log
+==========
+
+.. include:: ../../README.rst
+    :start-after: Change Log
+    :end-before: About Inklewriter JSON files
+
 Indices and tables
 ==================
 

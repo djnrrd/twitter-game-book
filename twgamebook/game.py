@@ -30,9 +30,13 @@ class TWGBGame(object):
         else:
             raise ValueError("Sleep time expects 'd' 'h' or 'm'")
 
-    def play(self):
+    def play(self, force_htag=''):
         """Play the game until a story end has been reached. Sleeping
         inbetween branching decisions.
+
+        :param force_htag: A Hashtag to force the game onto a preferred
+            option if the administrators require it.
+        :type force_htag: str
         """
         # We loop in here until the game ends
         game_end = False
@@ -68,6 +72,10 @@ class TWGBGame(object):
                     # the logs
                     if bookmark == 'TIED':
                         bookmark = last_pos[1]
+                    if force_htag:
+                        votes_text = '## Administrator Overruled ##'
+                        bookmark = valid_hashtags[force_htag]
+                        force_htag = ''
             if votes_text:
                 tweet_id = self._send_stitch(votes_text, tweet_id)
             thread = self.story.get_section(bookmark)
