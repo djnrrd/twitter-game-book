@@ -57,27 +57,34 @@ class TWGBGame(object):
                     # Get the valid hashtags
                     valid_hashtags = self.story.get_hashtags(bookmark)
                     logger.debug(f"Valid hashtags should be {valid_hashtags}")
-                    # Get the user hashtags. This is where the process will
-                    # sleep
-                    user_hashtags = self._gather_hashtags(tweet_id, last_time)
+                    # Sleep for the required time and get the hashtags out of
+                    # the replies
+                    user_hashtags = self._sleep_for_replies(tweet_id, last_time)
                     logger.debug(f"Got user hashtags {user_hashtags}")
                     bookmark = self._check_votes(user_hashtags, valid_hashtags)
             thread = self.story.get_section(bookmark)
             post = self._send_story(thread, tweet_id)
             logger.info(post)
 
-    def _check_votes(self, user_hastags, valid_hashtags):
+    def _check_votes(self, user_hashtags, valid_hashtags):
         """Check that user submitted hashtags are valid and return the key to
         the winning one
 
-        :param user_hastags: The user submitted hashtags
-        :type user_hastags: Counter
+        :param user_hashtags: The user submitted hashtags
+        :type user_hashtags: Counter
         :param valid_hashtags: The valid hashtags for this part of the story
         :type valid_hashtags: dict
         :return: The key for the next stitch in the story.
         :rtype: str
         """
-        pass
+        ret_str = ''
+        print('====')
+        for hashtag in user_hashtags.most_common():
+            if hashtag[0] in valid_hashtags and not ret_str:
+                ret_str = valid_hashtags[hashtag[0]]
+            if hashtag[0] in valid_hashtags:
+                print(f"* {hashtag[0]} - {hashtag[1]} votes")
+        return ret_str
 
     def _load_last_log(self):
         """Load the last game state from the log.
@@ -123,11 +130,13 @@ class TWGBGame(object):
             return ()
 
     def _send_story(self, thread, tweet_id=0):
-        """Send the next story stitch to output
+        """Send the next story section to output
 
-        :param thread: The next story stitch to send
+        :param thread: The next story thread to send
         :type thread: list
-        :return: A random number to simulate twitter message ID
+        :param tweet_id: The last tweet ID in the thread for this to reply to
+        :type tweet_id: int
+        :return: the last twitter tweet ID
         :rtype: int
         """
         # Loop through the supplied stitches updating the latest tweet_id for
@@ -137,22 +146,62 @@ class TWGBGame(object):
         return tweet_id
 
     def _send_stitch(self, stitch, tweet_id):
-        pass
+        """ Send a stitch to output
 
-    def _gather_hashtags(self, tweet_id, last_time):
-        """Sleep for the required time and then gather the hashtags from the
-        replies
-
-        :param tweet_id: Last tweet of the last stitch where we will be
-            investigating replies
+        :param stitch: Text to send
+        :type stitch: str
+        :param tweet_id: Tweet ID to reply to
         :type tweet_id: int
-        :param last_time: Datetime object of the time the last tweet
-            was sent
-        :type last_time: datetime
-        :return: A list of hashtags submitted by users
-        :rtype: list
+        :return: the tweet ID of this tweet
         """
         pass
+
+    def _sleep_for_replies(self, tweet_id, last_time):
+        """Sleep for the required time between posts and gather replies to
+        the last tweet
+
+        :param tweet_id: The last tweet_id to gather replies from
+        :type tweet_id: int
+        :param last_time: The last time a tweet was sent
+        :type last_time: datetime
+        :return: A list of replies for now :TODO Work out the separation
+            between console and twitter
+        :rtype: list
+        """
+        # we want the loop to run at least once so we capture a reply
+        ret_list  = []
+        time_diff = timedelta()
+        while time_diff < self.sleep_time:
+            # Now we check the difference between then and now
+            time_diff = datetime.now() - last_time
+            # console will want to gather replies during the sleep, twitter
+            # will return None
+            reply = self._get_console_replies()
+            if reply:
+                ret_list += reply
+        # The console should have built a ret_list, otherwise get them from
+        # twitter
+        if not ret_list:
+            ret_list = self.get_twitter_replies(tweet_id)
+        return ret_list
+
+    def _get_console_replies(self):
+        """Gather tweet replies from console input, returns None unless
+        called on a TWGBConsoleGame object
+
+        :return: None
+        """
+        return None
+
+    def _get_twitter_replies(self, tweet_id):
+        """Gather tweet hashtags from twitter, returns [] for the time being
+
+        :param tweet_id: The tweet id to parse the replies
+        :type tweet_id: int
+        :return: An empty list for now
+        :rtype: list
+        """
+        return []
 
 class TWGBConsoleGame(TWGBGame):
     """An object for managing the game on the console
@@ -186,56 +235,16 @@ class TWGBConsoleGame(TWGBGame):
             print(f"=={new_id}==")
         return new_id
 
-    def _gather_hashtags(self, tweet_id, last_time):
-        """Instead of sleeping and then gathering the data from the twitter API
-        we'll just gather them in the console.
+    def _get_console_replies(self):
+        """Get a "Tweet" from the console
 
-        :param tweet_id: Last tweet of the last stitch where we will be
-            investigating replies
-        :type tweet_id: int
-        :param last_time: Datetime object of the time the last tweet
-            was sent
-        :type last_time: datetime
-        :return: The counts of hashtags submitted by users
-        :rtype: Counter
+        :return: Unique hashtags from the entered tweet
+        :rtype: list
         """
-        # So instead of sleeping, we're going to collect input from the terminal
-        # Work out how long we're 'sleeping' for and collect 'tweets' in a
-        # bucket
-        time_diff = datetime.now() - last_time
-        user_hashtags = []
-        while time_diff < self.sleep_time:
-            # Ignore case by changing everything to upper case
-            tweet = input('Enter a tweet: ').upper()
-            pattern = re.compile('#[0-9A-Z]+')
-            matches = pattern.findall(tweet)
-            # I want a list of unique hashtags from this tweet no doublers
-            matches = list(set(matches))
-            user_hashtags += matches
-            time_diff = datetime.now() - last_time
-        # Add all the hashtags together
-        all_hashtags = []
-        for hashtag in user_hashtags:
-            all_hashtags.append(hashtag)
-        # Convert them to a Counter objects
-        return Counter(all_hashtags)
-
-    def _check_votes(self, user_hastags, valid_hashtags):
-        """Check that user submitted hashtags are valid and return the key to
-        the winning one
-
-        :param user_hastags: The user submitted hashtags
-        :type user_hastags: Counter
-        :param valid_hashtags: The valid hashtags for this part of the story
-        :type valid_hashtags: dict
-        :return: The key for the next stitch in the story.
-        :rtype: str
-        """
-        ret_str = ''
-        print('====')
-        for hashtag in user_hastags.most_common():
-            if hashtag[0] in valid_hashtags and not ret_str:
-                ret_str = valid_hashtags[hashtag[0]]
-            if hashtag[0] in valid_hashtags:
-                print(f"* {hashtag[0]} - {hashtag[1]} votes")
-        return ret_str
+        tweet = input('Enter a tweet: ').upper()
+        # Find the hashtags
+        pattern = re.compile('#[0-9A-Z]+')
+        matches = pattern.findall(tweet)
+        # I want a list of unique hashtags from this tweet no doublers
+        matches = list(set(matches))
+        return matches
