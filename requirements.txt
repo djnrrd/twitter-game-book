@@ -2,3 +2,4 @@ docopt
 requests
 setuptools
 sphinx
+sphinx-rtd-theme

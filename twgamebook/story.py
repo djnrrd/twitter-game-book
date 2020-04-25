@@ -188,11 +188,11 @@ class TWGBStory(object):
             return None
 
     def _get_options(self, options):
-        """Generate the thread endings when options are present on the stitch
+        """Generate the stitch endings when options are present on the stitch
 
         :param options: The list of options from the stitch
         :type options: list
-        :return: List of thread ending tweets
+        :return: List of stitch ending tweets
         :rtype: list
         """
         # First thing is to filter the options down if there are conditions
@@ -224,7 +224,7 @@ class TWGBStory(object):
             for option in filtered_options:
                 ret_str += f"* {option['option']}\n"
             ret_str += '\n\nReply to this tweet with your preferred Hashtag'
-            return ret_str
+            return [ret_str]
 
     def _pass_conditions(self, if_conditions=[], not_if_conditions=[]):
         """ Check the conditions related to displaying the option or stitch
@@ -246,23 +246,24 @@ class TWGBStory(object):
                                 not_if_conditions)
         return if_result and not_if_result
 
-    def get_section(self, start_key='', _ret_str=''):
+    def get_section(self, start_key='', _ret_list=[]):
         """Read a section of the game until options or an ending is found
 
         :param start_key: The key for the starting stitch of the story. Leaving
             this blank will start the story from the beginning
         :type start_key: str
-        :param _ret_str: The cumulative previously returned thread, used in
+        :param _ret_list: The cumulative previously returned stitch, used in
             recursion
-        :type _ret_str: str
-        :return: A list of tweets made up of all the stitches for this section.
+        :type _ret_list: str
+        :return: A list of paragraphs with the options as the final paragrah
+            for this section
         :rtype: list
         """
-        # _ret_str isn't being cleared when the method finishes, leading to
+        # _ret_list isn't being cleared when the method finishes, leading to
         # subsequent calls being a cumulative version of the results. Must be a
         # pythonic quirk I need to learn more about.
-        if not _ret_str or not isinstance(_ret_str, str):
-            _ret_str = ''
+        if not _ret_list or not isinstance(_ret_list, list):
+            _ret_list = []
         if not start_key or not isinstance(start_key, str):
             start_key = self.initial
         logger.debug(f"using Stitch ID {start_key}")
@@ -273,12 +274,10 @@ class TWGBStory(object):
             # Check if we display this stitch:
             if self._pass_conditions(stitch.if_conditions,
                                      stitch.not_if_conditions):
-                _ret_str += stitch.content
+                _ret_list += [stitch.content]
             # Now look if we need to keep going to the next piece
             if stitch.divert:
-                # Break the paragraph up
-                _ret_str += '\n\n'
-                return self.get_section(stitch.divert, _ret_str)
+                return self.get_section(stitch.divert, _ret_list)
             # Or generate our options, there shouldn't be both
             elif stitch.options:
                 # Write the option key and flags to the log
@@ -287,17 +286,17 @@ class TWGBStory(object):
                 # will be returned instead
                 option_tweets = self._get_options(stitch.options)
                 if isinstance(option_tweets, TWGBStitch):
-                    return self.get_section(option_tweets.key, _ret_str)
+                    return self.get_section(option_tweets.key, _ret_list)
                 else:
-                    _ret_str += option_tweets
-                    return _ret_str
+                    _ret_list += option_tweets
+                    return _ret_list
             # Otherwise we've reached an ending
             else:
                 # Write that we ended to the log
                 logger.info(f"GAMEEND {self.title}")
-                _ret_str += f"\n\nThank you for playing {self.title} by" \
-                            f" {self.author}"
-                return _ret_str
+                _ret_list += [f"Thank you for playing {self.title} by" \
+                            f" {self.author}"]
+                return _ret_list
         else:
             logger.warning(f"Could not find {start_key} in the game")
             raise KeyError(f"Could not find {start_key} in the game")
