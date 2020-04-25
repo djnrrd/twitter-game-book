@@ -25,25 +25,22 @@ log_format = logging.Formatter('%(asctime)s - %(levelname)s - %(''message)s',
 log_fh.setFormatter(log_format)
 logger.addHandler(log_fh)
 
-def main(args):
-    if isinstance(args, dict):
-        if args['-d']:
-            logger.setLevel(logging.DEBUG)
-            log_fh.setLevel(logging.DEBUG)
-        logger.debug('Starting twgamebook')
-        # Load the game
-        source_file = args['--source']
-        sleep_time = args['--sleep-time']
-        my_story = story.TWGBStory(source_file)
-        if args['--no-twitter']:
-            my_game = game.TWGBConsoleGame(my_story, sleep_time)
-        else:
-            my_game = game.TWGBGame(my_story, sleep_time)
-        my_game.play()
+def main():
+    args = docopt(__doc__)
+    if args['-d']:
+        logger.setLevel(logging.DEBUG)
+        log_fh.setLevel(logging.DEBUG)
+    logger.debug('Starting twgamebook')
+    # Load the game
+    source_file = args['--source']
+    sleep_time = args['--sleep-time']
+    my_story = story.TWGBStory(source_file)
+    if args['--no-twitter']:
+        my_game = game.TWGBConsoleGame(my_story, sleep_time)
     else:
-        raise KeyError('Expected Dictionary object as args')
+        my_game = game.TWGBGame(my_story, sleep_time)
+    my_game.play()
 
 
 if __name__ == '__main__':
-    args = docopt(__doc__)
-    main(args)
+    main()
