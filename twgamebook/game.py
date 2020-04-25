@@ -37,6 +37,7 @@ class TWGBGame(object):
         # We loop in here until the game ends
         game_end = False
         bookmark = ''
+        votes_text = ''
         while not game_end:
             # Check the log, set the tweet_id to 0 until it's overwritten
             last_pos = self._load_last_log()
@@ -61,7 +62,10 @@ class TWGBGame(object):
                     # the replies
                     user_hashtags = self._sleep_for_replies(tweet_id, last_time)
                     logger.debug(f"Got user hashtags {user_hashtags}")
-                    bookmark = self._check_votes(user_hashtags, valid_hashtags)
+                    votes_text, bookmark = self._check_votes(user_hashtags,
+                                                   valid_hashtags)
+            if votes_text:
+                tweet_id = self._send_stitch(votes_text, tweet_id)
             thread = self.story.get_section(bookmark)
             post = self._send_story(thread, tweet_id)
             logger.info(post)
@@ -70,21 +74,26 @@ class TWGBGame(object):
         """Check that user submitted hashtags are valid and return the key to
         the winning one
 
+        User hashtags should be a list of unique hashtags per user, converted
+        to uppercase
+
         :param user_hashtags: The user submitted hashtags
         :type user_hashtags: Counter
         :param valid_hashtags: The valid hashtags for this part of the story
         :type valid_hashtags: dict
-        :return: The key for the next stitch in the story.
-        :rtype: str
+        :return: Text for the vote count and The key for the next stitch in the
+            story.
+        :rtype: str, str
         """
         ret_str = ''
-        print('====')
+        vote_str = ''
+        user_hashtags = Counter(user_hashtags)
         for hashtag in user_hashtags.most_common():
             if hashtag[0] in valid_hashtags and not ret_str:
                 ret_str = valid_hashtags[hashtag[0]]
             if hashtag[0] in valid_hashtags:
-                print(f"* {hashtag[0]} - {hashtag[1]} votes")
-        return ret_str
+                vote_str += f"* {hashtag[0]} - {hashtag[1]} votes\n"
+        return vote_str, ret_str
 
     def _load_last_log(self):
         """Load the last game state from the log.
