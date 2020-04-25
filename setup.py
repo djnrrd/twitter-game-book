@@ -7,6 +7,9 @@ setup(
     entry_points = {
         'console_scripts': ['runtwgb=twgamebook.command_line:main'],
     },
+    # include the test inputs
+    data_files = [('test_inputs', ['test_inputs/3198.json'])],
+    install_requires = ['docopt', 'requests'],
     author='DJ Nrrd',
     author_email='djnrrd@gmail.com',
     url='https://github.com/djnrrd/twitter-game-book',
@@ -14,7 +17,7 @@ setup(
         'Bug Tracker': 'https://github.com/djnrrd/twitter-game-book/issues',
         'Source Code': 'https://github.com/djnrrd/twitter-game-book/',
     },
-    data_files = [('test_inputs', ['test_inputs/3198.json'])],
+
     keywords='twitter bot twitterbot games',
     classifiers=[
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',

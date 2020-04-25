@@ -1,4 +1,4 @@
 docopt
-datetime
 requests
 setuptools
+sphinx
