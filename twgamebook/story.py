@@ -188,11 +188,11 @@ class TWGBStory(object):
             return None
 
     def _get_options(self, options):
-        """Generate the thread endings when options are present on the stitch
+        """Generate the stitch endings when options are present on the stitch
 
         :param options: The list of options from the stitch
         :type options: list
-        :return: List of thread ending tweets
+        :return: List of stitch ending tweets
         :rtype: list
         """
         # First thing is to filter the options down if there are conditions
@@ -252,7 +252,7 @@ class TWGBStory(object):
         :param start_key: The key for the starting stitch of the story. Leaving
             this blank will start the story from the beginning
         :type start_key: str
-        :param _ret_list: The cumulative previously returned thread, used in
+        :param _ret_list: The cumulative previously returned stitch, used in
             recursion
         :type _ret_list: str
         :return: A list of paragraphs with the options as the final paragrah
@@ -274,7 +274,7 @@ class TWGBStory(object):
             # Check if we display this stitch:
             if self._pass_conditions(stitch.if_conditions,
                                      stitch.not_if_conditions):
-                _ret_list += stitch.content
+                _ret_list += [stitch.content]
             # Now look if we need to keep going to the next piece
             if stitch.divert:
                 return self.get_section(stitch.divert, _ret_list)

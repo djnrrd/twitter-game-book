@@ -38,8 +38,9 @@ class TWGBGame(object):
         game_end = False
         bookmark = ''
         while not game_end:
-            # Check the log,
+            # Check the log, set the tweet_id to 0 until it's overwritten
             last_pos = self._load_last_log()
+            tweet_id = 0
             if last_pos:
                 # Was it the end of the this game?
                 if f"GAMEEND {self.story.title}" in last_pos:
@@ -62,7 +63,7 @@ class TWGBGame(object):
                     logger.debug(f"Got user hashtags {user_hashtags}")
                     bookmark = self._check_votes(user_hashtags, valid_hashtags)
             thread = self.story.get_section(bookmark)
-            post = self._send_story(thread)
+            post = self._send_story(thread, tweet_id)
             logger.info(post)
 
     def _check_votes(self, user_hastags, valid_hashtags):
@@ -84,14 +85,23 @@ class TWGBGame(object):
         If there is no log return an empty tuple, if the last message was a
         GAMEEND message return that.
 
-        :return: (last_time, last_key, last_flags, last_tweet) or (game_end)
+        twgamebook.story object will log an INFO message with 'last_key' and
+        'last_flags'
+            Apr 23 21:47 - INFO - oppositeTheChamb - ["has_ring"]
+        Which is immediately followed by an INFO message from the
+        twgamebook.game object with the last_tweet sent
+            Apr 23 21:47 - INFO - 669401
+
+        :return: (last_time(datetime), last_key(str), last_flags(list),
+            last_tweet(int)) or (game_end)
         :rtype: tuple
         """
+        # Read the log file in, the extract all the 'INFO' messages from it
         with open('twgamebook.log', 'r') as log_file:
             logs = log_file.readlines()
         info_logs = [x for x in logs if 'INFO' in x]
         # If there's no log we start fresh because there should be at least 2
-        # messages per twitter thread.
+        # messages per twitter stitch.
         if len(info_logs) >= 2:
             # Trim the newline character and split out the fields
             # INFO messages should be in pairs of game info, tweet info
@@ -112,19 +122,28 @@ class TWGBGame(object):
         else:
             return ()
 
-    def _send_story(self, thread):
-        """Send the next story thread to twitter
+    def _send_story(self, thread, tweet_id=0):
+        """Send the next story stitch to output
 
-        :param thread: The next story thread to send
-        :type thread: str
+        :param thread: The next story stitch to send
+        :type thread: list
+        :return: A random number to simulate twitter message ID
+        :rtype: int
         """
+        # Loop through the supplied stitches updating the latest tweet_id for
+        # each post and return that back for the log
+        for stitch in thread:
+            tweet_id = self._send_stitch(stitch, tweet_id)
+        return tweet_id
+
+    def _send_stitch(self, stitch, tweet_id):
         pass
 
     def _gather_hashtags(self, tweet_id, last_time):
         """Sleep for the required time and then gather the hashtags from the
         replies
 
-        :param tweet_id: Last tweet of the last thread where we will be
+        :param tweet_id: Last tweet of the last stitch where we will be
             investigating replies
         :type tweet_id: int
         :param last_time: Datetime object of the time the last tweet
@@ -143,27 +162,35 @@ class TWGBConsoleGame(TWGBGame):
     :param sleep_time: Time to sleep between threads
     :type sleep_time: str
     """
-    def _send_story(self, thread):
-        """Send the next story thread to the console
+    def _send_stitch(self, stitch, tweet_id):
+        """Send the next story stitch to the console
 
-        :param thread: The next story thread to send
-        :type thread: str
+        :param stitch: The next story stitch to send
+        :type stitch: str
         :return: A random number to simulate twitter message ID
         :rtype: int
         """
-        tweet_list = wrap(thread, 280)
-        for tweet in tweet_list:
-            print('====')
-            print(tweet)
-        # I'll want to keep track of the last tweet for the replies
-        # Here we'll do a random number
-        return randint(0, 1000000)
+        # First we need to check if we're over the 280 character limit which
+        # the twitter api module obfuscates from us
+        if len(stitch) > 280:
+            # Make a list of the stitch broken at a word boundary around the 280
+            # character point. Send that back up to send_story to manage the
+            # recursion for us
+            tweet_list = wrap(stitch, 280)
+            new_id = self._send_story(tweet_list, tweet_id)
+        else:
+            # Print a new "tweet"
+            new_id = randint(0, 1000000)
+            print(f"==Replying to tweet_id - {tweet_id}==")
+            print(stitch)
+            print(f"=={new_id}==")
+        return new_id
 
     def _gather_hashtags(self, tweet_id, last_time):
         """Instead of sleeping and then gathering the data from the twitter API
         we'll just gather them in the console.
 
-        :param tweet_id: Last tweet of the last thread where we will be
+        :param tweet_id: Last tweet of the last stitch where we will be
             investigating replies
         :type tweet_id: int
         :param last_time: Datetime object of the time the last tweet
