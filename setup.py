@@ -7,8 +7,6 @@ setup(
     entry_points = {
         'console_scripts': ['runtwgb=twgamebook.command_line:main'],
     },
-    # include the test inputs TODO Work out where these go
-    data_files = [('test_inputs', ['test_inputs/3198.json'])],
     install_requires = ['docopt', 'requests'],
     author='DJ Nrrd',
     author_email='djnrrd@gmail.com',
