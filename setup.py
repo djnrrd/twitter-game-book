@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 setup(
     name='twitter-game-book',
-    version='0.0.1',
+    version='0.0.2',
     packages=find_packages(),
     # Register the command line package as a console-script to go in $PATH
     entry_points = {
         'console_scripts': ['runtwgb=twgamebook.command_line:main'],
     },
-    # include the test inputs
+    # include the test inputs TODO Work out where these go
     data_files = [('test_inputs', ['test_inputs/3198.json'])],
     install_requires = ['docopt', 'requests'],
     author='DJ Nrrd',

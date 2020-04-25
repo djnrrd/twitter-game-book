@@ -1,6 +1,6 @@
 """
 Usage:
-    runtwgb -s SOURCE -t PERIOD [-n] [-d]
+    runtwgb -s SOURCE -t PERIOD [-n] [-d] [-f OPTION]
 
 Options:
 -s SOURCE --source=SOURCE       Source file for the game, can be a local
@@ -10,6 +10,8 @@ Options:
 
 -n --no-twitter                 Use interactive console session for testing
 -d                              Switch debugging on in the log
+-f --force-option=OPTION        Force a particular hashtag to be used on the
+                                next decision
 """
 import logging
 from docopt import docopt
@@ -39,7 +41,11 @@ def main():
         my_game = game.TWGBConsoleGame(my_story, sleep_time)
     else:
         my_game = game.TWGBGame(my_story, sleep_time)
-    my_game.play()
+    if args['--force-option']:
+        force_htag = args['--force-option']
+    else:
+        force_htag = ''
+    my_game.play(force_htag=force_htag)
 
 
 if __name__ == '__main__':
