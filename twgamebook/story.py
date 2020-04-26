@@ -259,6 +259,7 @@ class TWGBStory(object):
         :return: A list of paragraphs with the options as the final paragrah
             for this section
         :rtype: list
+        :raises KeyError: if start_key can not be found in the story
         """
         # _ret_list isn't being cleared when the method finishes, leading to
         # subsequent calls being a cumulative version of the results. Must be a
@@ -309,6 +310,8 @@ class TWGBStory(object):
         :type key: str
         :return: A List of hashtags and associated stitch keys
         :rtype: list
+        :raises KeyError: if key is not str or could not be found in the game
+        :raises ValueError: if the option does not have one hashtag
         """
         if isinstance(key, str):
             LOGGER.debug(f"Looking for hashtags in {key}")
