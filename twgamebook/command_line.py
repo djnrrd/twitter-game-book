@@ -18,21 +18,21 @@ from docopt import docopt
 from twgamebook import game, story
 
 # Set my logging options
-logger = logging.getLogger('twgamebook')
-logger.setLevel(logging.INFO)
-log_fh = logging.FileHandler('twgamebook.log')
-log_fh.setLevel(logging.INFO)
-log_format = logging.Formatter('%(asctime)s - %(levelname)s - %(''message)s',
-                               datefmt='%b %d %H:%M')
-log_fh.setFormatter(log_format)
-logger.addHandler(log_fh)
+LOGGER = logging.getLogger('twgamebook')
+LOGGER.setLevel(logging.INFO)
+_LOG_FH = logging.FileHandler('twgamebook.log')
+_LOG_FH.setLevel(logging.INFO)
+_log_format = logging.Formatter('%(asctime)s - %(levelname)s - %(''message)s',
+                                datefmt='%b %d %H:%M')
+_LOG_FH.setFormatter(_log_format)
+LOGGER.addHandler(_LOG_FH)
 
 def main():
     args = docopt(__doc__)
     if args['-d']:
-        logger.setLevel(logging.DEBUG)
-        log_fh.setLevel(logging.DEBUG)
-    logger.debug('Starting twgamebook')
+        LOGGER.setLevel(logging.DEBUG)
+        _LOG_FH.setLevel(logging.DEBUG)
+    LOGGER.debug('Starting twgamebook')
     # Load the game
     source_file = args['--source']
     sleep_time = args['--sleep-time']

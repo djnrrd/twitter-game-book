@@ -196,6 +196,112 @@ progress</p></li>
 </dd>
 </dl>
 <dl class="py method">
+<dt id="twgamebook.story.TWGBStory._get_options">
+<code class="sig-name descname">_get_options</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.story.TWGBStory._get_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the section endings when options are present on the stitch</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>options</strong> (<em>list</em>) – The list of options from the stitch</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of section ending tweets, or a TWGBStitch if only one
+option could be followed</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list, <a class="reference internal" href="#twgamebook.story.TWGBStitch" title="twgamebook.story.TWGBStitch">TWGBStitch</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="twgamebook.story.TWGBStory._get_stitch">
+<code class="sig-name descname">_get_stitch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.story.TWGBStory._get_stitch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an individual stitch by it’s key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – The key for the stitch to return</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The individual stitch</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#twgamebook.story.TWGBStitch" title="twgamebook.story.TWGBStitch">TWGBStitch</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="twgamebook.story.TWGBStory._load_http_json">
+<code class="sig-name descname">_load_http_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source_url</span></em><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.story.TWGBStory._load_http_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the source file from the internet</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>source_url</strong> (<em>str</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Parsed JSON object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="twgamebook.story.TWGBStory._load_local_json">
+<code class="sig-name descname">_load_local_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source_file</span></em><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.story.TWGBStory._load_local_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the source file from local disk</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>source_file</strong> (<em>str</em>) – Path to the locally stored source file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The parsed JSON object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>json.JSONDecodeError</strong> – If json was unable to parse the file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="twgamebook.story.TWGBStory._load_stitches">
+<code class="sig-name descname">_load_stitches</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stitches</span></em><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.story.TWGBStory._load_stitches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a list of TWGBStitch objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>stitches</strong> (<em>dict</em>) – Dictionary of stitches from the JSON source file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of twgbSwitch objects</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="twgamebook.story.TWGBStory._pass_conditions">
+<code class="sig-name descname">_pass_conditions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">if_conditions</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">not_if_conditions</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.story.TWGBStory._pass_conditions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the conditions related to displaying the option or stitch</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>if_conditions</strong> (<em>list</em>) – List of the ifConditions flags to check for</p></li>
+<li><p><strong>not_if_conditions</strong> (<em>list</em>) – List of the notIfConditions flags to check for</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True or False</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="twgamebook.story.TWGBStory.get_hashtags">
 <code class="sig-name descname">get_hashtags</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#twgamebook.story.TWGBStory.get_hashtags" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the hashtags associated with the options</p>
@@ -208,6 +314,12 @@ progress</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>KeyError</strong> – if key is not str or could not be found in the game</p></li>
+<li><p><strong>ValueError</strong> – if the option does not have one hashtag</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -231,6 +343,9 @@ for this section</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>KeyError</strong> – if start_key can not be found in the story</p>
 </dd>
 </dl>
 </dd></dl>

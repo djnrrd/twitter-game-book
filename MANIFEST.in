@@ -1,2 +1,2 @@
-graft test_inputs
+graft tests
 graft docs

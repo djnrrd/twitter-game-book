@@ -9,6 +9,7 @@ TWGBStory Class
 ---------------
 .. autoclass:: twgamebook.story.TWGBStory
    :members:
+   :private-members:
    :undoc-members:
    :show-inheritance:
 
