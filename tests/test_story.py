@@ -13,20 +13,21 @@ _log_format = logging.Formatter('%(asctime)s - %(levelname)s - %(''message)s',
 _LOG_FH.setFormatter(_log_format)
 LOGGER.addHandler(_LOG_FH)
 
-
+# Initialise the main object for tests to inherit from using the local test file
 class TestTWGBStoryLocal(TestCase):
 
     def setUp(self):
         self.story = story.TWGBStory('test_inputs/good_input.json')
 
 
+# Initialise a test object using a masqueraded live URL :todo learn masquerading
 class TestTWGBStoryLive(TestCase):
 
     def setUp(self):
         self.story = story.TWGBStory(
             'https://www.inklewriter.com/stories/3198.json')
 
-
+# Check for Exceptions when raising TWBGStory objects
 class TestTWGBStoryRaises(TestCase):
 
     def test_no_string(self):
@@ -39,7 +40,7 @@ class TestTWGBStoryRaises(TestCase):
         self.assertRaises(json.JSONDecodeError, story.TWGBStory,
                           'test_inputs/bad_json.json')
 
-
+# Check basic object initialisation
 class TestTWGBStoryInit(TestTWGBStoryLocal):
 
     def test_initial_title(self):
@@ -74,7 +75,7 @@ class TestTWGBStoryInit(TestTWGBStoryLocal):
         assert isinstance(self.story, story.TWGBStory)
         print(f"Story object is {type(story.TWGBStory)}")
 
-
+# Check public funtion get_hashtags
 class TestTWGBStoryGetHashtags(TestTWGBStoryLocal):
 
     def test_get_hashtags(self):
@@ -84,6 +85,7 @@ class TestTWGBStoryGetHashtags(TestTWGBStoryLocal):
         assert self.story.get_hashtags('oppositeTheChamb') == valid_hashtags
         print(f"Valid hashtags: {self.story.get_hashtags('oppositeTheChamb')}")
 
+# Check that get_hashtags raises an Exception on bad input
 class TestTWGBStoryGetHashtagsRaises(TestCase):
 
     def setUp(self):
@@ -99,6 +101,7 @@ class TestTWGBStoryGetHashtagsRaises(TestCase):
         self.assertRaises(ValueError, self.story.get_hashtags,
             'oppositeTheChamb')
 
+# Check public funtion get_section
 class TestTWGBStoryGetSection(TestTWGBStoryLocal):
 
     def test_get_section_type(self):
@@ -175,3 +178,6 @@ class TestTWGBStoryGetSection(TestTWGBStoryLocal):
 
     def test_get_section_raises(self):
         self.assertRaises(KeyError, self.story.get_section, 'INVALIDKEY')
+
+#check private functions
+class testTWGBStoryPrivate(TestTWGBStoryLocal):
