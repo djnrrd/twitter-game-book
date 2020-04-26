@@ -126,3 +126,35 @@ class TestTWGBStoryGetSection(TestTWGBStoryLocal):
         assert section[-1] == 'Should we:\n\n* Tell her about the #tunnels\n* ' \
                               'Show her the #ring\n\nReply to this tweet with ' \
                               'your preferred Hashtag'
+        print(f"Last tweet: {section[-1]}")
+
+    def test_get_section_one_option(self):
+        section = self.story.get_section('youPushTheCrateA')
+        assert section[-1] == "Should we:\n\n* 'I don't believe you!' Head " \
+                              "back #home\n* Accept your #fate\n\n" \
+                              "Reply to this tweet with your preferred Hashtag"
+        print(f"Last tweet: {section[-1]}")
+
+    def test_get_section_if_stitch_type(self):
+        self.story.flags +=['has_ring']
+        section = self.story.get_section('youFindYourselfO')
+        assert isinstance(section, list)
+        print(f"If stitch section is type {type(self.story.get_section())}")
+
+    def test_get_section_if_stitch_length(self):
+        self.story.flags +=['has_ring']
+        section = self.story.get_section('youFindYourselfO')
+        assert len(section) == 7
+        print(f"If stitch section len: {len(self.story.get_section('youFindYourselfO'))}")
+
+    def test_get_section_if_not_stitch_type(self):
+        self.story.flags +=['has_ring', 'gave_ring_away']
+        section = self.story.get_section('youFindYourselfO')
+        assert isinstance(section, list)
+        print(f"If stitch section is type {type(self.story.get_section())}")
+
+    def test_get_section_if_not_stitch_length(self):
+        self.story.flags +=['has_ring',  'gave_ring_away']
+        section = self.story.get_section('youFindYourselfO')
+        assert len(section) == 6
+        print(f"If stitch section len: {len(self.story.get_section('youFindYourselfO'))}")
