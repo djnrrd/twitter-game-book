@@ -37,7 +37,7 @@ class TestTWGBStoryRaises(TestCase):
 
     def test_bad_json(self):
         self.assertRaises(json.JSONDecodeError, story.TWGBStory,
-                          'test_inputs/bad_input.json')
+                          'test_inputs/bad_json.json')
 
 
 class TestTWGBStoryInit(TestTWGBStoryLocal):
@@ -84,6 +84,20 @@ class TestTWGBStoryGetHashtags(TestTWGBStoryLocal):
         assert self.story.get_hashtags('oppositeTheChamb') == valid_hashtags
         print(f"Valid hashtags: {self.story.get_hashtags('oppositeTheChamb')}")
 
+class TestTWGBStoryGetHashtagsRaises(TestCase):
+
+    def setUp(self):
+        self.story = story.TWGBStory('test_inputs/bad_story.json')
+
+    def test_get_hashtags_not_str(self):
+        self.assertRaises(KeyError, self.story.get_hashtags, 000)
+
+    def test_get_hashtags_key_not_found(self):
+        self.assertRaises(KeyError, self.story.get_hashtags, 'INVALIDKEY')
+
+    def test_get_hashtags_story_error(self):
+        self.assertRaises(ValueError, self.story.get_hashtags,
+            'oppositeTheChamb')
 
 class TestTWGBStoryGetSection(TestTWGBStoryLocal):
 
