@@ -224,7 +224,7 @@ class TWGBStory(object):
             ret_str = 'Should we:\n\n'
             for option in filtered_options:
                 ret_str += f"* {option['option']}\n"
-            ret_str += '\n\nReply to this tweet with your preferred Hashtag'
+            ret_str += '\nReply to this tweet with your preferred Hashtag'
             return [ret_str]
 
     def _pass_conditions(self, if_conditions=[], not_if_conditions=[]):

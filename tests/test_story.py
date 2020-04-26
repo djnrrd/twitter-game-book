@@ -116,7 +116,7 @@ class TestTWGBStoryGetSection(TestTWGBStoryLocal):
         self.story.flags.append('has_ring')
         section = self.story.get_section()
         assert section[-1] == 'Should we:\n\n* Go #Left\n* Go ' \
-                              '#Right\n\n\nReply to this tweet with your ' \
+                              '#Right\n\nReply to this tweet with your ' \
                               'preferred Hashtag'
         print(f"Last tweet: {section[-1]}")
 
@@ -124,5 +124,5 @@ class TestTWGBStoryGetSection(TestTWGBStoryLocal):
         self.story.flags.append('has_ring')
         section = self.story.get_section('youPushTheCrateA')
         assert section[-1] == 'Should we:\n\n* Tell her about the #tunnels\n* ' \
-                              'Show her the #ring\n\n\nReply to this tweet with ' \
+                              'Show her the #ring\n\nReply to this tweet with ' \
                               'your preferred Hashtag'
