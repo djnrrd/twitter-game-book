@@ -242,8 +242,23 @@ class testTWGBStoryPrivate(TestTWGBStoryLocal):
         self.assertFalse(self.story._pass_conditions([],['has_ring',
                                                      'gave_ring_away']))
 
+    def test__pass_conditions_if_if_not_true(self):
+        self.story.flags = ['has_ring']
+        self.assertTrue(self.story._pass_conditions(['has_ring'],
+                                                     ['gave_ring_away']))
+
     def test__pass_conditions_if_if_not_false(self):
         self.story.flags = ['gave_ring_away', 'has_ring']
+        self.assertFalse(self.story._pass_conditions(['has_ring'],
+                                                    ['gave_ring_away']))
+
+    def test__pass_conditions_if_if_not_false2(self):
+        self.story.flags = ['gave_ring_away']
+        self.assertFalse(self.story._pass_conditions(['has_ring'],
+                                                    ['gave_ring_away']))
+
+    def test__pass_conditions_if_if_not_false3(self):
+        self.story.flags = []
         self.assertFalse(self.story._pass_conditions(['has_ring'],
                                                     ['gave_ring_away']))
 
