@@ -67,3 +67,14 @@ class TestTWGBStoryHashtags(TestTWGBStoryLocal):
                           '#FIRE': 'youFindASovereig'}
         assert self.story.get_hashtags('oppositeTheChamb') == valid_hashtags
         print(f"Valid hashtags: {self.story.get_hashtags('oppositeTheChamb')}")
+
+class TestTWGBStorySection(TestTWGBStoryLocal):
+
+    def test_get_first_section(self):
+        assert isinstance(self.story.get_section(), list)
+        print(f"First section is type {type(self.story.get_section())}")
+
+    def test_first_section_length(self):
+        assert len(self.story.get_section()) == 4
+        print(f"First section is len: {len(self.story.get_section())}")
+
