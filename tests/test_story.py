@@ -239,7 +239,7 @@ class testTWGBStoryPrivate(TestTWGBStoryLocal):
 
     def test__load_stitches_type(self):
         story = self.story._load_local_json(GOOD_INPUTS)
-        stitches = self.story._load_stitches(story)
+        stitches = self.story._load_stitches(story['data']['stitches'])
         assert isinstance(stitches, list)
 
     def test__load_stitches_len(self):
