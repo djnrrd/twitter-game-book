@@ -190,12 +190,13 @@ class TWGBStory(object):
             return None
 
     def _get_options(self, options):
-        """Generate the stitch endings when options are present on the stitch
+        """Generate the section endings when options are present on the stitch
 
         :param options: The list of options from the stitch
         :type options: list
-        :return: List of stitch ending tweets
-        :rtype: list
+        :return: List of section ending tweets, or a TWGBStitch if only one
+            option could be followed
+        :rtype: list, TWGBStitch
         """
         # First thing is to filter the options down if there are conditions
         # attached to them

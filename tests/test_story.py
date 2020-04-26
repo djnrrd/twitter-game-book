@@ -190,7 +190,24 @@ class testTWGBStoryPrivate(TestTWGBStoryLocal):
 
     def test__get_options(self):
         options = self.story._get_stitch('oppositeTheChamb').options
-        assert len(options) == 3
+        section_ending = self.story._get_options(options)
+        assert section_ending == ['Should we:\n\n* Go #Left\n* Go #Right\n* '
+                                  'Investigate the #fire\n\nReply to this '
+                                  'tweet with your preferred Hashtag']
+
+    def test__get_options_if_not_true(self):
+        self.story.flags = ['has_ring']
+        options = self.story._get_stitch('oppositeTheChamb').options
+        section_ending = self.story._get_options(options)
+        assert section_ending == ["Should we:\n\n* Go #Left\n* Go "
+                                  "#Right\n\nReply to this tweet with your "
+                                  "preferred Hashtag"]
+
+    def test__get_options_one_option(self):
+        options = self.story._get_stitch('youPushTheCrateA').options
+        section_ending = self.story._get_options(options)
+        assert isinstance(section_ending, story.TWGBStitch)
+
 
     # There's a lot of things to test in the _pass_conditions
     def test__pass_conditions_one_if_true(self):
