@@ -22,7 +22,8 @@ class TestTWGBStoryRaises(TestCase):
         self.assertRaises(ValueError, story.TWGBStory, '/good_input.json')
 
     def test_bad_json(self):
-        self.assertRaises(json.JSONDecodeError, story.TWGBStory, 'test_inputs/bad_input.json')
+        self.assertRaises(json.JSONDecodeError, story.TWGBStory,
+                          'test_inputs/bad_input.json')
 
 class TestTWGBStoryInit(TestTWGBStoryLocal):
 
@@ -57,3 +58,12 @@ class TestTWGBStoryInit(TestTWGBStoryLocal):
     def test_intial_object(self):
         assert isinstance(self.story, story.TWGBStory)
         print(f"Story object is {type(story.TWGBStory)}")
+
+class TestTWGBStoryHashtags(TestTWGBStoryLocal):
+
+    def test_valid_hashtags(self):
+        valid_hashtags = {'#LEFT': 'asYouCrawlThroug',
+                          '#RIGHT': 'youCrawlThroughT',
+                          '#FIRE': 'youFindASovereig'}
+        assert self.story.get_hashtags('oppositeTheChamb') == valid_hashtags
+        print(f"Valid hashtags: {self.story.get_hashtags('oppositeTheChamb')}")

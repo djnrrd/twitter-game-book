@@ -156,9 +156,10 @@ class TWGBStory(object):
             raise ValueError(
                 f"Source file {source_file} must either be a local "
                 f"file or HTTP file")
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
             logger.warning(f"Could not parse JSON from {source_file}")
-            raise json.JSONDecodeError()
+            raise json.JSONDecodeError(f"Could not parse JSON from "
+                                       f"{source_file}", e.doc, e.pos)
         return source_json
 
     def _load_stitches(self, stitches):
