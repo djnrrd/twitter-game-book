@@ -172,3 +172,6 @@ class TestTWGBStoryGetSection(TestTWGBStoryLocal):
         section = self.story.get_section('youFindYourselfO')
         assert len(section) == 6
         print(f"If stitch section len: {len(self.story.get_section('youFindYourselfO'))}")
+
+    def test_get_section_raises(self):
+        self.assertRaises(KeyError, self.story.get_section, 'INVALIDKEY')
