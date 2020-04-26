@@ -43,35 +43,41 @@ class TestTWGBStoryRaises(TestCase):
 # Check basic object initialisation
 class TestTWGBStoryInit(TestTWGBStoryLocal):
 
-    def test_initial_title(self):
+    def test_init_title(self):
         assert self.story.title == 'The Cave of Tests'
         print(f"Story title: {self.story.title}")
 
-    def test_initial_author(self):
+    def test_init_author(self):
         assert self.story.author == 'DJ Nrrd'
         print(f"Story author: {self.story.author}")
 
-    def test_initial_key(self):
+    def test_init_key(self):
         assert self.story.initial == 'youHaveDiscovere'
         print(f"Initial key: {self.story.initial}")
 
-    def test_initial_stitches(self):
+    def test_init_stitches_type(self):
         assert isinstance(self.story.stitches, list)
         print(f"Stitches are type {type(self.story.stitches)}")
 
-    def test_stitch_length(self):
+    def test_init_stitches_length(self):
         assert len(self.story.stitches) == 50
         print(f"There are {len(self.story.stitches)} stitches")
 
-    def test_initial_flags(self):
+    def test_init_stitches_objects(self):
+        stitches = [x for x in self.story.stitches if not isinstance(x,
+                                                              story.TWGBStitch)]
+        assert len(stitches) == 0
+        print(f"There are {len(stitches)} nonTWGBStitch objects")
+
+    def test_init_flags_type(self):
         assert isinstance(self.story.flags, list)
         print(f"Flags are type {type(self.story.flags)}")
 
-    def test_flag_length(self):
+    def test_init_flags_length(self):
         assert len(self.story.flags) == 0
         print(f"There are {len(self.story.flags)} flags")
 
-    def test_intial_object(self):
+    def test_init_object(self):
         assert isinstance(self.story, story.TWGBStory)
         print(f"Story object is {type(story.TWGBStory)}")
 
@@ -181,3 +187,4 @@ class TestTWGBStoryGetSection(TestTWGBStoryLocal):
 
 #check private functions
 class testTWGBStoryPrivate(TestTWGBStoryLocal):
+    pass
