@@ -177,6 +177,7 @@ class TWGBStory(object):
 
     def _get_stitch(self, key):
         """Return an individual stitch by it's key
+
         :param key: The key for the stitch to return
         :type key: str
         :return: The individual stitch
