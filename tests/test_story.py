@@ -1,17 +1,31 @@
 from unittest import TestCase
 from twgamebook import story
 import json
+import logging
+
+# Setup the logger for unittests to write to
+LOGGER = logging.getLogger('twgamebook')
+LOGGER.setLevel(logging.INFO)
+_LOG_FH = logging.FileHandler('twgamebook.log')
+_LOG_FH.setLevel(logging.INFO)
+_log_format = logging.Formatter('%(asctime)s - %(levelname)s - %(''message)s',
+                                datefmt='%b %d %H:%M')
+_LOG_FH.setFormatter(_log_format)
+LOGGER.addHandler(_LOG_FH)
+
 
 class TestTWGBStoryLocal(TestCase):
 
     def setUp(self):
         self.story = story.TWGBStory('test_inputs/good_input.json')
 
+
 class TestTWGBStoryLive(TestCase):
 
     def setUp(self):
         self.story = story.TWGBStory(
             'https://www.inklewriter.com/stories/3198.json')
+
 
 class TestTWGBStoryRaises(TestCase):
 
@@ -24,6 +38,7 @@ class TestTWGBStoryRaises(TestCase):
     def test_bad_json(self):
         self.assertRaises(json.JSONDecodeError, story.TWGBStory,
                           'test_inputs/bad_input.json')
+
 
 class TestTWGBStoryInit(TestTWGBStoryLocal):
 
@@ -59,22 +74,55 @@ class TestTWGBStoryInit(TestTWGBStoryLocal):
         assert isinstance(self.story, story.TWGBStory)
         print(f"Story object is {type(story.TWGBStory)}")
 
-class TestTWGBStoryHashtags(TestTWGBStoryLocal):
 
-    def test_valid_hashtags(self):
+class TestTWGBStoryGetHashtags(TestTWGBStoryLocal):
+
+    def test_get_hashtags(self):
         valid_hashtags = {'#LEFT': 'asYouCrawlThroug',
                           '#RIGHT': 'youCrawlThroughT',
                           '#FIRE': 'youFindASovereig'}
         assert self.story.get_hashtags('oppositeTheChamb') == valid_hashtags
         print(f"Valid hashtags: {self.story.get_hashtags('oppositeTheChamb')}")
 
-class TestTWGBStorySection(TestTWGBStoryLocal):
 
-    def test_get_first_section(self):
+class TestTWGBStoryGetSection(TestTWGBStoryLocal):
+
+    def test_get_section_type(self):
         assert isinstance(self.story.get_section(), list)
         print(f"First section is type {type(self.story.get_section())}")
 
-    def test_first_section_length(self):
+    def test_get_section_length(self):
         assert len(self.story.get_section()) == 4
         print(f"First section is len: {len(self.story.get_section())}")
 
+    def test_get_section_log_written(self):
+        section = self.story.get_section()
+        with open('twgamebook.log', 'r') as f:
+            logs = f.readlines()
+        info_logs = [x for x in logs if 'INFO' in x]
+        assert 'INFO - oppositeTheChamb - []' in info_logs[-1]
+        print(f"Last log: {info_logs[-1]}")
+
+    def test_get_section_flags_logged(self):
+        self.story.flags.append('has_ring')
+        section = self.story.get_section()
+        with open('twgamebook.log', 'r') as f:
+            logs = f.readlines()
+        info_logs = [x for x in logs if 'INFO' in x]
+        assert 'INFO - oppositeTheChamb - ["has_ring"]' in info_logs[-1]
+        print(f"Last log: {info_logs[-1]}")
+
+    def test_get_section_not_if_options(self):
+        self.story.flags.append('has_ring')
+        section = self.story.get_section()
+        assert section[-1] == 'Should we:\n\n* Go #Left\n* Go ' \
+                              '#Right\n\n\nReply to this tweet with your ' \
+                              'preferred Hashtag'
+        print(f"Last tweet: {section[-1]}")
+
+    def test_get_section_if_options(self):
+        self.story.flags.append('has_ring')
+        section = self.story.get_section('youPushTheCrateA')
+        assert section[-1] == 'Should we:\n\n* Tell her about the #tunnels\n* ' \
+                              'Show her the #ring\n\n\nReply to this tweet with ' \
+                              'your preferred Hashtag'

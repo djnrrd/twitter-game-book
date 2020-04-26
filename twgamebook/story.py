@@ -3,7 +3,7 @@ import re
 
 import requests
 
-from twgamebook.game import logger
+from twgamebook.game import LOGGER
 
 
 class TWGBStitch(object):
@@ -35,7 +35,7 @@ class TWGBStitch(object):
     def __init__(self, key, stitch):
         """Object init
         """
-        logger.debug(f"Building switch obect {key}")
+        LOGGER.debug(f"Building switch obect {key}")
         self.key = key
         self.content = stitch['content'][0]
         self.divert = ''
@@ -48,25 +48,25 @@ class TWGBStitch(object):
         options_list = [x for x in stitch['content'] if isinstance(x, dict)]
         for option in options_list:
             if 'divert' in option:
-                logger.debug(f"Adding divert to {option['divert']}")
+                LOGGER.debug(f"Adding divert to {option['divert']}")
                 self.divert = option['divert']
             if 'option' in option:
-                logger.debug(f"Adding options {option}")
+                LOGGER.debug(f"Adding options {option}")
                 self.options.append(option)
             if 'flagName' in option:
-                logger.debug(f"Adding flag {option['flagName']}")
+                LOGGER.debug(f"Adding flag {option['flagName']}")
                 self.flag_names.append(option['flagName'])
             if 'pageNum' in option:
-                logger.debug(f"Adding page_num {option['pageNum']}")
+                LOGGER.debug(f"Adding page_num {option['pageNum']}")
                 self.page_num = option['pageNum']
             if 'pageLabel' in option:
-                logger.debug(f"Adding page_label {option['pageLabel']}")
+                LOGGER.debug(f"Adding page_label {option['pageLabel']}")
                 self.page_label = option['pageLabel']
             if 'ifCondition' in option:
-                logger.debug(f"Adding if_condition {option['ifCondition']}")
+                LOGGER.debug(f"Adding if_condition {option['ifCondition']}")
                 self.if_conditions.append(option['ifCondition'])
             if 'notIfCondition' in option:
-                logger.debug(f"Adding not_if_condition"
+                LOGGER.debug(f"Adding not_if_condition"
                              f" {option['notIfCondition']}")
                 self.not_if_conditions.append(option['notIfCondition'])
 
@@ -118,7 +118,7 @@ class TWGBStory(object):
                                                          'stitches'])
                 self.flags = []
             else:
-                logger.warning('Did not find expected Inklewriter JSON object')
+                LOGGER.warning('Did not find expected Inklewriter JSON object')
                 raise ValueError('Expected Inklewriter JSON object')
         else:
             raise KeyError('Expected string object as source')
@@ -129,7 +129,7 @@ class TWGBStory(object):
         :param str source_url:
         :return: Parsed JSON object
         """
-        logger.debug(f"{source_url} provided as URL")
+        LOGGER.debug(f"{source_url} provided as URL")
         # Get the file via requests. If it raises as error, so be it
         r = requests.get(source_url)
         # We should get a 200, otherwise we'll raise an error through the
@@ -148,16 +148,16 @@ class TWGBStory(object):
         :return: The parsed JSON object
         """
         try:
-            logger.debug(f"Attempting to open {source_file}")
+            LOGGER.debug(f"Attempting to open {source_file}")
             with open(source_file, 'r') as f:
                 source_json = json.loads(f.read())
         except FileNotFoundError:
-            logger.warning(f"Could not open {source_file}")
+            LOGGER.warning(f"Could not open {source_file}")
             raise ValueError(
                 f"Source file {source_file} must either be a local "
                 f"file or HTTP file")
         except json.JSONDecodeError as e:
-            logger.warning(f"Could not parse JSON from {source_file}")
+            LOGGER.warning(f"Could not parse JSON from {source_file}")
             raise json.JSONDecodeError(f"Could not parse JSON from "
                                        f"{source_file}", e.doc, e.pos)
         return source_json
@@ -267,7 +267,7 @@ class TWGBStory(object):
             _ret_list = []
         if not start_key or not isinstance(start_key, str):
             start_key = self.initial
-        logger.debug(f"using Stitch ID {start_key}")
+        LOGGER.debug(f"using Stitch ID {start_key}")
         stitch = self._get_stitch(start_key)
         if stitch:
             # Update game flags
@@ -282,7 +282,7 @@ class TWGBStory(object):
             # Or generate our options, there shouldn't be both
             elif stitch.options:
                 # Write the option key and flags to the log
-                logger.info(f"{stitch.key} - {json.dumps(self.flags)}")
+                LOGGER.info(f"{stitch.key} - {json.dumps(self.flags)}")
                 # Format the options, if there aren't any the next stitch
                 # will be returned instead
                 option_tweets = self._get_options(stitch.options)
@@ -294,12 +294,12 @@ class TWGBStory(object):
             # Otherwise we've reached an ending
             else:
                 # Write that we ended to the log
-                logger.info(f"GAMEEND {self.title}")
+                LOGGER.info(f"GAMEEND {self.title}")
                 _ret_list += [f"Thank you for playing {self.title} by" \
                             f" {self.author}"]
                 return _ret_list
         else:
-            logger.warning(f"Could not find {start_key} in the game")
+            LOGGER.warning(f"Could not find {start_key} in the game")
             raise KeyError(f"Could not find {start_key} in the game")
 
     def get_hashtags(self, key):
@@ -311,7 +311,7 @@ class TWGBStory(object):
         :rtype: list
         """
         if isinstance(key, str):
-            logger.debug(f"Looking for hashtags in {key}")
+            LOGGER.debug(f"Looking for hashtags in {key}")
             stitch = self._get_stitch(key)
             if stitch:
                 ret_dict = {}
@@ -322,12 +322,12 @@ class TWGBStory(object):
                     if len(hash_tags) == 1:
                         ret_dict[hash_tags[0].upper()] = stitch_key
                     else:
-                        logger.warning(f"Expected to find 1 hashtag in "
+                        LOGGER.warning(f"Expected to find 1 hashtag in "
                                        f"{option['option']}")
                         raise ValueError('Expected to find 1 hashtag')
                 return ret_dict
             else:
-                logger.warning(f"Could not find {key} in the game")
+                LOGGER.warning(f"Could not find {key} in the game")
                 raise KeyError(f"Could not find {key} in the game")
         else:
             raise KeyError('string expected as key')

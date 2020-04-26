@@ -7,7 +7,7 @@ from random import randint
 from collections import Counter
 
 # Get the log into this namespace
-logger = logging.getLogger('twgamebook')
+LOGGER = logging.getLogger('twgamebook')
 
 
 class TWGBGame(object):
@@ -49,7 +49,7 @@ class TWGBGame(object):
             if last_pos:
                 # Was it the end of the this game?
                 if f"GAMEEND {self.story.title}" in last_pos:
-                    logger.debug('Matching GAMEEND found in logs.')
+                    LOGGER.debug('Matching GAMEEND found in logs.')
                     game_end = True
                     continue
                 else:
@@ -57,15 +57,15 @@ class TWGBGame(object):
                     bookmark = last_pos[1]
                     self.story.set_flags(last_pos[2])
                     tweet_id = last_pos[3]
-                    logger.debug(f"Got key {bookmark} and tweet {tweet_id} from "
+                    LOGGER.debug(f"Got key {bookmark} and tweet {tweet_id} from "
                                  f"the log")
                     # Get the valid hashtags
                     valid_hashtags = self.story.get_hashtags(bookmark)
-                    logger.debug(f"Valid hashtags should be {valid_hashtags}")
+                    LOGGER.debug(f"Valid hashtags should be {valid_hashtags}")
                     # Sleep for the required time and get the hashtags out of
                     # the replies
                     user_hashtags = self._sleep_for_replies(tweet_id, last_time)
-                    logger.debug(f"Got user hashtags {user_hashtags}")
+                    LOGGER.debug(f"Got user hashtags {user_hashtags}")
                     votes_text, bookmark = self._check_votes(user_hashtags,
                                                    valid_hashtags)
                     # If we've got a tie, return to the last paragraph from
@@ -80,7 +80,7 @@ class TWGBGame(object):
                 tweet_id = self._send_stitch(votes_text, tweet_id)
             thread = self.story.get_section(bookmark)
             post = self._send_story(thread, tweet_id)
-            logger.info(post)
+            LOGGER.info(post)
 
     def _check_votes(self, user_hashtags, valid_hashtags):
         """Check that user submitted hashtags are valid and return a summary
