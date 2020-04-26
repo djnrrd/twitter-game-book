@@ -15,7 +15,7 @@ Options:
 """
 import logging
 from docopt import docopt
-from . import game, story
+from twgamebook import game, story
 
 # Set my logging options
 logger = logging.getLogger('twgamebook')
