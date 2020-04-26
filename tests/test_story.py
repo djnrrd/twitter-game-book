@@ -13,11 +13,17 @@ _log_format = logging.Formatter('%(asctime)s - %(levelname)s - %(''message)s',
 _LOG_FH.setFormatter(_log_format)
 LOGGER.addHandler(_LOG_FH)
 
+# Define the testing source files
+GOOD_INPUTS = 'test_inputs/good_input.json'
+BAD_JSON = 'test_inputs/bad_json.json'
+BAD_STORY = 'test_inputs/bad_story.json'
+NO_FILE = '/no/file/here'
+
 # Initialise the main object for tests to inherit from using the local test file
 class TestTWGBStoryLocal(TestCase):
 
     def setUp(self):
-        self.story = story.TWGBStory('test_inputs/good_input.json')
+        self.story = story.TWGBStory(GOOD_INPUTS)
 
 
 # Initialise a test object using a masqueraded live URL :todo learn masquerading
@@ -34,11 +40,11 @@ class TestTWGBStoryRaises(TestCase):
         self.assertRaises(KeyError, story.TWGBStory, 000)
 
     def test_invalid_path(self):
-        self.assertRaises(ValueError, story.TWGBStory, '/good_input.json')
+        self.assertRaises(ValueError, story.TWGBStory, NO_FILE)
 
     def test_bad_json(self):
         self.assertRaises(json.JSONDecodeError, story.TWGBStory,
-                          'test_inputs/bad_json.json')
+                          BAD_JSON)
 
 # Check basic object initialisation
 class TestTWGBStoryInit(TestTWGBStoryLocal):
@@ -95,7 +101,7 @@ class TestTWGBStoryGetHashtags(TestTWGBStoryLocal):
 class TestTWGBStoryGetHashtagsRaises(TestCase):
 
     def setUp(self):
-        self.story = story.TWGBStory('test_inputs/bad_story.json')
+        self.story = story.TWGBStory(BAD_STORY)
 
     def test_get_hashtags_not_str(self):
         self.assertRaises(KeyError, self.story.get_hashtags, 000)
@@ -208,6 +214,38 @@ class testTWGBStoryPrivate(TestTWGBStoryLocal):
         section_ending = self.story._get_options(options)
         assert isinstance(section_ending, story.TWGBStitch)
 
+    def test__get_stitch(self):
+        assert isinstance(self.story._get_stitch('youPushTheCrateA'),
+                          story.TWGBStitch)
+
+    def test__get_stitch_none(self):
+        self.assertIsNone(self.story._get_stitch('INVALIDKEY'))
+
+    def test__load_http_json(self):
+        # :todo all of this
+        pass
+    
+    def test__load_local_json(self):
+        story = self.story._load_local_json(GOOD_INPUTS)
+        assert isinstance(story, dict)
+
+    def test__load_local_json_raises1(self):
+        self.assertRaises(json.JSONDecodeError, self.story._load_local_json,
+            BAD_JSON)
+
+    def test__load_local_json_raises2(self):
+        self.assertRaises(ValueError, self.story._load_local_json,
+            NO_FILE)
+
+    def test__load_stitches_type(self):
+        story = self.story._load_local_json(GOOD_INPUTS)
+        stitches = self.story._load_stitches(story)
+        assert isinstance(stitches, list)
+
+    def test__load_stitches_len(self):
+        story = self.story._load_local_json(GOOD_INPUTS)
+        stitches = self.story._load_stitches(story['data']['stitches'])
+        assert len(stitches) == 50
 
     # There's a lot of things to test in the _pass_conditions
     def test__pass_conditions_one_if_true(self):

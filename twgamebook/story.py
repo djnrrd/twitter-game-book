@@ -146,6 +146,8 @@ class TWGBStory(object):
         :param source_file: Path to the locally stored source file
         :type source_file: str
         :return: The parsed JSON object
+        :rtype: dict
+        :raises json.JSONDecodeError: If json was unable to parse the file
         """
         try:
             LOGGER.debug(f"Attempting to open {source_file}")
